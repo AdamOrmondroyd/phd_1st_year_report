@@ -27,9 +27,9 @@
 \maketitle
 
 \begin{figure}[!h]
-    \centering
-    \includegraphics[width=5cm]{University_Crest.pdf}
-    \label{fig:crest}
+  \centering
+  \includegraphics[width=5cm]{University_Crest.pdf}
+  \label{fig:crest}
 \end{figure}
 
 \begin{abstract}
@@ -62,13 +62,13 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $P(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{P} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
 
 \begin{equation}
-w(a) = 
-\begin{cases}
-= w_0 \qquad & \textrm{(constant)} \\
-= w_0 + (1-a) w_a \qquad & \textrm{(CPL)}\\
-= w_0 + (1-a)a w_a \qquad & \textrm{(JBP)}\\
-= w_a + (w_0-w_a) \frac{a^{1/\tau}[1-(a/a_t)^{1/\tau}]}{1-a_t^{-1/\tau}} \qquad & \textrm{(FNT),}\\
-\end{cases}
+  w(a) = 
+  \begin{cases}
+  = w_0 \qquad & \textrm{(constant)} \\
+  = w_0 + (1-a) w_a \qquad & \textrm{(CPL)}\\
+  = w_0 + (1-a)a w_a \qquad & \textrm{(JBP)}\\
+  = w_a + (w_0-w_a) \frac{a^{1/\tau}[1-(a/a_t)^{1/\tau}]}{1-a_t^{-1/\tau}} \qquad & \textrm{(FNT),}\\
+  \end{cases}
 \end{equation}
 %
 which are the constant, Chevallier--Polarski--Linder (CPL) \cite{CPL_1, CPL_2}, Jassal--Bagla--Padmanabhan (JBP) \cite{JBP}, and Felive--Nesseris--Tsujikawa (FNT) \cite{FNT} parameterisions, to name a few.
@@ -85,15 +85,15 @@ Fitting a linear spline with a variable number of nodes is a self--consistent ap
 \subsection{The idea}
 Nested sampling is an algorithm developed by John Skilling for calculating the evidence $Z$, the probability of data given a particular model \cite{skilling} \cite{Ashton_2022}. Posterior samples are an optional by--product. This is typically in the context of Bayes theorem:
 \begin{equation}
-\textrm{Posterior} = P = \Pr\left(\bm{\theta}| D, \mathcal{M}\right) = \frac{\Pr\left(D|\mathcal{M}(\bm\theta)\right) \times \Pr\left(\bm\theta\right)}{\Pr\left(D|\mathcal{M}\right)} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} = \frac{L(\bm\theta) \pi(\bm{\theta})}{Z}\textrm,
-\label{bayes}
+  \textrm{Posterior} = P = \Pr\left(\bm{\theta}| D, \mathcal{M}\right) = \frac{\Pr\left(D|\mathcal{M}(\bm\theta)\right) \times \Pr\left(\bm\theta\right)}{\Pr\left(D|\mathcal{M}\right)} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} = \frac{L(\bm\theta) \pi(\bm{\theta})}{Z}\textrm,
+  \label{bayes}
 \end{equation}
 %
 for a model $\mathcal{M}$ and its parameters $\bm{\theta}$. The evidence Z is used to compare models $\mathcal{M}_i$ and $\mathcal{M}_j$ through the Bayes factor and posterior odds ratio:
 
 \begin{equation}
-    \mathcal{P}_{i, j} = \ln\frac{\Pr\left(D|\mathcal{M}_j\right)}{\Pr\left(D|\mathcal{M}_i\right)}
-    \mathcal{B}_{i, j} = \mathcal{B}_{i, j} + \ln\frac{\pi_{\mathcal{M}_i}}{\pi_{\mathcal{M}_j}}\textrm.
+  \mathcal{P}_{i, j} = \ln\frac{\Pr\left(D|\mathcal{M}_j\right)}{\Pr\left(D|\mathcal{M}_i\right)}
+  \mathcal{B}_{i, j} = \mathcal{B}_{i, j} + \ln\frac{\pi_{\mathcal{M}_i}}{\pi_{\mathcal{M}_j}}\textrm.
 \end{equation}
 
 The posterior odds is perhaps a more complete assessment of the relative performance of two models, but the Bayes factor is more common in the literature \cite{Sonke}. The models I consider have equal priors, so $\mathcal{P}_{i,j} = \mathcal{B}_{i,j}$ \cite{Sonke}.
@@ -101,30 +101,30 @@ The posterior odds is perhaps a more complete assessment of the relative perform
 The Bayesian evidence is the normalisation of the numerator in Bayes' theorem, so in theory can be calculated by numerical integration. This becomes impractical to solve using typical numerical integration techniques, such as rastering over $\bm\theta$, once $\bm\theta$ has many dimensions. Instead, define an element of prior mass, $dX = \pi(\bm\theta)d\bm\theta$. $X$ can be accumulated from $dX$ in any order, so by defining:
 %
 \begin{equation}
-    X(\lambda) = \int_{L(\bm\theta)>\lambda} \pi(\bm\theta)d\bm\theta\textrm,
+  X(\lambda) = \int_{L(\bm\theta)>\lambda} \pi(\bm\theta)d\bm\theta\textrm,
 \end{equation}
 %
 i.e.\ $X$ is the cumulative prior mass for likelihood greater than $\lambda$. The evidence then becomes a one-dimensional integral:
 %
 \begin{equation}
-    Z = \int_0^1 L(X) dX\textrm,
+  Z = \int_0^1 L(X) dX\textrm,
 \end{equation}
 %
 where $L(X(\lambda)) = \lambda$. This transformation requires sorting the prior mass elements by likelihood. Given the set of $m$ points:
 \begin{equation}
-    0<X_m<\dots<X_2<X_1<1, L_i = L(X_i)\textrm,
+  0<X_m<\dots<X_2<X_1<1, L_i = L(X_i)\textrm,
 \end{equation}
 %
 a sensible numerical recipe would estimate $Z$ as a weighted sum:
 %
 \begin{equation}
-    Z \approx \sum_{i=1}^m w_i Z_i\textrm.
+  Z \approx \sum_{i=1}^m w_i Z_i\textrm.
 \end{equation}
 %
 Because $L(X)$ is monotonically decreasing, it must be larger than any value at larger $X$, so $w_i=X_i-X_{i+1}$ gives a lower bound. As it must also be smaller than any value at smaller $X$, $X_{i-1}-X_i$ provides an upper bound:
 
 \begin{equation}
-    \sum_{i=1}^m (X_i-X_{i+1})L_i \le Z \le \sum_{i=1}^m (X_{i-1}-X_i)L_i + X_mL_\textrm{max}\textrm.
+  \sum_{i=1}^m (X_i-X_{i+1})L_i \le Z \le \sum_{i=1}^m (X_{i-1}-X_i)L_i + X_mL_\textrm{max}\textrm.
 \end{equation}
 %
 $L_\textrm{max}$ is the maximum likelihood value found as $X\to0$. A tiny volume containing huge likelihood could always exist, and as such $L_\textrm{max}$ cannot be determined by any kind of sampling.
@@ -132,19 +132,19 @@ $L_\textrm{max}$ is the maximum likelihood value found as $X\to0$. A tiny volume
 $Z$ is dominated by the region of bulk posterior mass. This typically occupies a fraction $e^{-H}$ of the prior, where:
 %
 \begin{equation}
-    H = \textrm{information} = \int \log\left(dP/dX\right)dP\textrm.
+  H = \textrm{information} = \int \log\left(dP/dX\right)dP\textrm.
 \end{equation}
 %
 $H$ can be the order of thousands in practical problems. By considering the likelihood to consist of $C$ principal components, the posterior mass is expected to be broadly distributed over $-H\pm\sqrt{C}$ in $\log X$. Each principal component significantly restricts the range permitted by the prior, so $H$ should usually exceed $C$, which suggests that finding the posterior domain is more difficult than navigating within it. Therefore, to cover such a range, sampling should be linear in $\log X$ rather than $X$, so instead set:
 
 \begin{equation}
-    X_1 = t_1, X_2 = t_1t_2, \dots, X_m = t_1t_2t_3\dots t_m, 0<t_i<1\textrm.
+  X_1 = t_1, X_2 = t_1t_2, \dots, X_m = t_1t_2t_3\dots t_m, 0<t_i<1\textrm.
 \end{equation}
 %
 It is not usually possible to set precise values of $t$, but setting them statistically is enough. At each step, we need to find a new $X_i$ from the prior, subject to $X_i = t_i X_{i-1}<X_{i-1}$. The knowledge of this new point is specified by drawing $t_i$ from $\textrm{Uniform}(0, 1)$. This could be obtained by:
 \begin{enumerate}[label=\alph*)]
-\item sampling $X_i$ uniformly from the range $[0, X_{i-1}]$ then using the original likelihood sorting to find its corresponding $\bm\theta_i$, or
-\item sample $\bm\theta$ directly subject to $L(\bm\theta)>L_{i-1}$ in proportion to the prior.
+  \item sampling $X_i$ uniformly from the range $[0, X_{i-1}]$ then using the original likelihood sorting to find its corresponding $\bm\theta_i$, or
+  \item sample $\bm\theta$ directly subject to $L(\bm\theta)>L_{i-1}$ in proportion to the prior.
 \end{enumerate}
 
 These methods are equivalent, but b) does not use the prior mass, so the sorting step is not needed.
@@ -163,7 +163,7 @@ For each iteration $i$ of nested sampling, a point within the iso--likelihood co
 \texttt{PolyChord} uses the covariance matrix $\Sigma$ of the set of live and phantom points to infer the size and shape of the iso-likelihood contour, and determine an optimal $P(\hat{\bm n})$ and $w$. Uniformly transformed points remain so after an affine transformation:
 
 \begin{equation}
-    \textrm{L}^{-1}\bm x = \bm y,\qquad \textrm{LL}^{\intercal} = \Sigma\textrm,
+  \textrm{L}^{-1}\bm x = \bm y,\qquad \textrm{LL}^{\intercal} = \Sigma\textrm,
 \end{equation}
 where $\textrm{L}$ is the Cholesky decomposition of the covariance matrix. The new space containing $\bm y$ is termed the ``sampling space". This transformation gives the contour size $\mathcal{O}(1)$ size in every direction, ``whitening" it, so $w=1$ is a suitable initial step size. 
 $P(\hat{\bm n})$ is inspired by CosmoMC, which chooses a randomly oriented orthonormal basis, uses these directions in a random order, and generates a new one when this is exhausted \cite{CosmoMC}.
@@ -196,22 +196,22 @@ For the prior, I took the nodes to be sorted--uniform in $x$ in $\left[0, 1\righ
 This just leaves calculating the likelihood. This is straightforward for the $y$-errors case:
 
 \begin{equation}
-    L\left(\mathbf{\theta}\right) = \prod_{i=1}^{M}\frac{1}{\sqrt{2\pi\sigma_{y_i}^2}}\exp{\left[-\frac{\left(y_i-\textrm{linf}\left(x_i, \mathbf{\theta}\right)\right)^2}{2\sigma_{y_i}^2}\right]}\textrm,
+  L\left(\mathbf{\theta}\right) = \prod_{i=1}^{M}\frac{1}{\sqrt{2\pi\sigma_{y_i}^2}}\exp{\left[-\frac{\left(y_i-\textrm{linf}\left(x_i, \mathbf{\theta}\right)\right)^2}{2\sigma_{y_i}^2}\right]}\textrm,
 \end{equation}
 %
 with $M$ data points. Taking logs then reduces the product into a sum, which can be easily evaluated. Including the abscissa errors makes the evaluation more involved as one must marginalise over $X_i$, the possible ``true" value of the abscissa given the datum $x_i$: 
 
 \begin{equation}
-L\left(\mathbf{\theta}\right)= \prod_{j=1}^{M}\int_{X_-}^{X_+}dX_j\frac{\exp{\left[-\frac{\left(x_j-X_j\right)^2}{2\sigma_{x_j}^2} -\frac{\left(y_j-\textrm{linf}\left(X_j\right)\right)^2}{2\sigma_{y_j}^2}\right]}}{2\pi\sigma_{x_j}\sigma_{y_j}\left(X_+-X_-\right)}\textrm,
+  L\left(\mathbf{\theta}\right)= \prod_{j=1}^{M}\int_{X_-}^{X_+}dX_j\frac{\exp{\left[-\frac{\left(x_j-X_j\right)^2}{2\sigma_{x_j}^2} -\frac{\left(y_j-\textrm{linf}\left(X_j\right)\right)^2}{2\sigma_{y_j}^2}\right]}}{2\pi\sigma_{x_j}\sigma_{y_j}\left(X_+-X_-\right)}\textrm,
 \end{equation}
 %
 where $X_-$ and $X_+$ are the limits of $x$, 0 and 1 here. I split this integral by summing each straight section of the \textit{linf}, which can be each be reparameterised as straight lines in the usual way:
 
 \begin{equation}
 \begin{aligned}
-    & f_k(x) = m_k x + c_k, \qquad m_k = \frac{\theta_{y_{k+1}} - \theta_{y_k}}{\theta_{x_{k+1}} - \theta_{x_k}}, \qquad c_k = \theta_{y_k} - m_k \theta_{x_k} \\
-    \implies & L\left(\mathbf{\theta}\right) =
-    \prod_{j=1}^{M}\sum_{k=0}^{N-2}\int_{\theta_{x_k}}^{\theta_{x_{k+1}}}dX_j\frac{\exp{\left[-\frac{\left(x_j-X_j\right)^2}{2\sigma_{x_j}^2} -\frac{\left(y_j-\left(m_kX_j+ck\right)\right)^2}{2\sigma_{y_j}^2}\right]}}{2\pi\sigma_{x_j}\sigma_{y_j}\left(X_+-X_-\right)}\textrm,
+  & f_k(x) = m_k x + c_k, \qquad m_k = \frac{\theta_{y_{k+1}} - \theta_{y_k}}{\theta_{x_{k+1}} - \theta_{x_k}}, \qquad c_k = \theta_{y_k} - m_k \theta_{x_k} \\
+  \implies & L\left(\mathbf{\theta}\right) =
+  \prod_{j=1}^{M}\sum_{k=0}^{N-2}\int_{\theta_{x_k}}^{\theta_{x_{k+1}}}dX_j\frac{\exp{\left[-\frac{\left(x_j-X_j\right)^2}{2\sigma_{x_j}^2} -\frac{\left(y_j-\left(m_kX_j+ck\right)\right)^2}{2\sigma_{y_j}^2}\right]}}{2\pi\sigma_{x_j}\sigma_{y_j}\left(X_+-X_-\right)}\textrm,
 \end{aligned}
 \end{equation}
 %
@@ -219,13 +219,13 @@ where $\theta_{x_k}$ and $\theta_{y_k}$ are the $x$ and $y$ coordinates of the $
 
 \begin{equation}
 \begin{aligned}
-& L = \prod_{j=1}^{M}\frac{1}{2\sqrt{2\pi}\left(X_+-X_-\right)}\sum_{k=0}^{N-2}
-\frac{\exp{\left[-\frac{(m_kx_j+c_k - yj)^2}{2\left(m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2\right)}\right]}}
-{\sqrt{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}}
-\left[\textrm{erf}\left(t_{jk}(\theta_{x_{k+1}})\right) - \textrm{erf}\left(t_{jk}(\theta_{x_k}\right)\right]\textrm, 
-\\
-& t_{jk}(X) = \sqrt{\frac{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}{2\sigma_{y_j}^2\sigma_{y_j}^2}}
-\left[X - \frac{x_j\sigma_{y_j}^2 + (y_j-c_k)m_k\sigma_{x_j}^2}{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}\right]\textrm, \qquad \textrm{erf}(t) = \frac{2}{\sqrt{\pi}}\int_0^t e^{-x^2}dx\textrm.
+  & L = \prod_{j=1}^{M}\frac{1}{2\sqrt{2\pi}\left(X_+-X_-\right)}\sum_{k=0}^{N-2}
+  \frac{\exp{\left[-\frac{(m_kx_j+c_k - yj)^2}{2\left(m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2\right)}\right]}}
+  {\sqrt{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}}
+  \left[\textrm{erf}\left(t_{jk}(\theta_{x_{k+1}})\right) - \textrm{erf}\left(t_{jk}(\theta_{x_k}\right)\right]\textrm, 
+  \\
+  & t_{jk}(X) = \sqrt{\frac{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}{2\sigma_{y_j}^2\sigma_{y_j}^2}}
+  \left[X - \frac{x_j\sigma_{y_j}^2 + (y_j-c_k)m_k\sigma_{x_j}^2}{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}\right]\textrm, \qquad \textrm{erf}(t) = \frac{2}{\sqrt{\pi}}\int_0^t e^{-x^2}dx\textrm.
 \end{aligned}
 \end{equation}
 %
@@ -233,39 +233,39 @@ Care must be taken when taking logs, the most appropriate approach is to use the
 %
 \begin{equation}
 \begin{aligned}
-&\mathcal{L} = \ln{L} = \sum_{j=1}^{M} -\ln{\left(2\sqrt{2\pi\left(X_+-X_-\right)}\right)}\\
-&+ \sum_{j=1}^{M} \left[\textrm{logsumexp}_k\left\{
--\frac{(m_kx_j+c_k - yj)^2}{2\left(m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2\right)}
-\textrm, 
-\left(\frac{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}{\sigma_{y_j}^2\sigma_{y_j}^2}\right)^{-\frac{1}{2}}
-\left[\textrm{erf}\left(t_{jk}(\theta_{x_{k+1}})\right) - \textrm{erf}\left(t_{jk}(\theta_{x_k})\right)\right]
-\right\}
-\right]\textrm.
+  &\mathcal{L} = \ln{L} = \sum_{j=1}^{M} -\ln{\left(2\sqrt{2\pi\left(X_+-X_-\right)}\right)}\\
+  &+ \sum_{j=1}^{M} \left[\textrm{logsumexp}_k\left\{
+  -\frac{(m_kx_j+c_k - yj)^2}{2\left(m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2\right)}
+  \textrm, 
+  \left(\frac{m_k^2\sigma_{x_j}^2+\sigma_{y_j}^2}{\sigma_{y_j}^2\sigma_{y_j}^2}\right)^{-\frac{1}{2}}
+  \left[\textrm{erf}\left(t_{jk}(\theta_{x_{k+1}})\right) - \textrm{erf}\left(t_{jk}(\theta_{x_k})\right)\right]
+  \right\}
+  \right]\textrm.
 \end{aligned}
 \end{equation}
 %
 Since the elements of the first sum are all the same, it can just be multiplied by the size of the dataset. The logsumexp function is defined by:
 \begin{equation}
-\textrm{logsumexp}_j\left(x_j, b_j\right) = \ln{\sum_j b_j e^{x_j}}= x_\textrm{max} + \ln{\sum_j b_j \exp{\left(x_j-x_\textrm{max}\right)}} \textrm,
-\label{eq:logsumexp}
+  \textrm{logsumexp}_j\left(x_j, b_j\right) = \ln{\sum_j b_j e^{x_j}}= x_\textrm{max} + \ln{\sum_j b_j \exp{\left(x_j-x_\textrm{max}\right)}} \textrm,
+  \label{eq:logsumexp}
 \end{equation}
 
 Similarly to how multiplication becomes addition in log-scale, additions become $\textrm{logsumexp}$, which is frequently encountered when dealing with log probabilities. Typical cosmological $\log Z$ values are $\mathcal{O}\left(-1000\right)$, so their exponentials are much smaller than e.g.\ the smallest representable number in IEEE double precision, $\approx4.95\times10^{-324}$, so just combining the $\log$, $\textrm{sum}$ and $\exp$ functions in the appropriate way will lead to overflow errors \cite{IEEE}. Assuming the $x_i$ to be of similar magnitude, by writing $\textrm{logsumexp}$ in the way shown in equation \ref{eq:logsumexp} pulling a factor of $e^{x_\textrm{max}}$ from the sum will make the exponentials representable, and therefore maintain better precision \cite{logsumexp}.
 
 \begin{figure}[!hb]
-    \centering
-    \includegraphics[width=14cm]{toysineN.eps}
-    \caption{Histogram of posterior samples for adaptive \textit{linf}, for sine, line and flat cases, using either \texttt{PolyChord} or \texttt{MultiNest}. Left: $y$ errors only. Right: both $x$ and $y$ errors.}
-    \label{fig:toysineN}
+  \centering
+  \includegraphics[width=14cm]{toysineN.eps}
+  \caption{Histogram of posterior samples for adaptive \textit{linf}, for sine, line and flat cases, using either \texttt{PolyChord} or \texttt{MultiNest}. Left: $y$ errors only. Right: both $x$ and $y$ errors.}
+  \label{fig:toysineN}
 \end{figure}
 
 The posterior distribution of $N$ for \texttt{AdaptiveLinf} are shown in figure \ref{fig:toysineN}, and their respective functional posterior plots in figure \ref{fig:toysineadaptive}. As expected, the flat case favours $N=1$. However, the line case doesn't favour $N=4$, instead preferring five or six nodes without and with $x$ errors respectively. Substituting the nested sampler \texttt{MultiNest} recovers $N=4$ at least in the $y$ errors only case; the posterior of $N$ is also shown in figure \ref{fig:toysineN}. However, \texttt{MultiNest} also favours 6 nodes for the sine wave, when one would expect the maximum number of nodes to be favoured. I am investigating this further. 
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{toysineadaptive.eps}
-    \caption{Functional posterior contour plots of adaptive \textit{linf} posterior samples for sine, line and flat cases using \texttt{PolyChord}. Left: $y$ errors only. Right: both $x$ and $y$ errors. Note the different scale for the line case.}
-    \label{fig:toysineadaptive}
+  \centering
+  \includegraphics[width=16cm]{toysineadaptive.eps}
+  \caption{Functional posterior contour plots of adaptive \textit{linf} posterior samples for sine, line and flat cases using \texttt{PolyChord}. Left: $y$ errors only. Right: both $x$ and $y$ errors. Note the different scale for the line case.}
+  \label{fig:toysineadaptive}
 \end{figure}
 
 \newpage
@@ -288,25 +288,25 @@ To check that I am using \texttt{Cobaya} and \texttt{CAMB} correctly, I repeated
 The primordial matter power spectrum has the form:
 
 \begin{equation}
-    P(k) = A_s \left(\frac{k}{k_\textrm{pivot}} \right) ^ {n_s - 1},
+  P(k) = A_s \left(\frac{k}{k_\textrm{pivot}} \right) ^ {n_s - 1},
 \end{equation}
 %
 where $n_s$ is the scalar spectral index, and $A_s$ is the comoving curvature power at $k=k_\textrm{pivot}$ Then, taking logs of both sides, and converting to $\log_{10}{k}$ to match the literature and the original work \cite{Handley2019}, it can be seen that it is linear in log-log space, and therefore suitable for a linear spline reconstruction:
 
 \begin{equation}
-    \ln{P} = \ln{A_s} + \left(n_s - 1\right) \ln{\frac{k}{k_\textrm{pivot}}} = \ln{A_s} + \left(n_s - 1\right) \log_{10}{\frac{k}{k_\textrm{pivot}}} \ln{10}\textrm.
+  \ln{P} = \ln{A_s} + \left(n_s - 1\right) \ln{\frac{k}{k_\textrm{pivot}}} = \ln{A_s} + \left(n_s - 1\right) \log_{10}{\frac{k}{k_\textrm{pivot}}} \ln{10}\textrm.
 \end{equation}
 %
 $P(k)$ is of $\mathcal{O}\left(10^{-10}\right)$, but it is good practice in computation to work with parameters of $\mathcal{O}\left(1\right)$. Therefore, $\ln{\left(10^{10}P_i\right)}$  was used as the $y$--parameter of the \textit{linf}. My code uses this scaling implicitly, i.e.\ \texttt{lnPi} refers to $\ln{\left(10^{10}P_i\right)}$.
 
 \begin{equation}
-    P\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right) = 10^{-10} \exp{\left[{\textrm{linf}\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right)}\right]}\textrm.
+  P\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right) = 10^{-10} \exp{\left[{\textrm{linf}\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right)}\right]}\textrm.
 \end{equation}
 %
 Unlike the toy example where I was working with \texttt{PolyChord} directly, \texttt{Cobaya} understands each of the model parameters separately. Also, what \texttt{PolyChord} calls a ``prior" is the inverse cumulative distribution function of the prior, while \texttt{Cobaya} understands priors more literally. Applying this inverse to points uniformly distributed in the unit hypercube $[0, 1]^D$ returns points distributed according the the prior. Therefore, the interleaved uniform/sorted-uniform prior in my \texttt{linf} package cannot be used here. Instead, each of the $\log_{10}{k_i}$ parameters is given its own uniform prior, with the sorted constraint implemented in a separate prior, e.g:
 \begin{verbatim}
-    lambda lgk1, lgk2, lgk3, lgk4, lgk5, lgk6, lgk7: np.log(lgk1 < lgk2 < lgk3 < lgk4 
-        < lgk5 < lgk6 < lgk7)
+  lambda lgk1, lgk2, lgk3, lgk4, lgk5, lgk6, lgk7: np.log(lgk1 < lgk2 < lgk3 < lgk4 
+    < lgk5 < lgk6 < lgk7)
 \end{verbatim}
 for nine total nodes, where $\lg$ is shorthand for $\log_{10}$. This, along with including the parameters in the parameter block, made for laborious typing (even with Python's compact comparison operator chaining), so I automated writing the yaml files with a Python script.
 
@@ -317,28 +317,28 @@ The likelihoods used in the toy examples of section \ref{toyexamples} are simila
 I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using inheritance. The \texttt{LinfPk} inherits from \texttt{Theory}, and defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods. \texttt{calculate} depends on \texttt{self.linf}, which is specified in its child classes \texttt{VanillaPk} and \texttt{AdaptivePk}. \texttt{AdaptivePk} is complete as it specifies its own \texttt{params}, while \texttt{Vanilla[1-9]} specify them for  \texttt{VanillaPk} for the nine vanilla cases. A class diagram is shown in figure \ref{fig:PkUMLDiagram}. The functional posteriors from the vanilla cases are shown in figure \ref{fig:Pk_vanilla_100}, using 100 \texttt{PolyChord} live points. Their respective evidences are shown in figure \ref{fig:PklogZ}, along with the corresponding values for the adaptive case, split by $N$. The two sets are clearly different, in particular the most unlikely cases of $N=1$ and $N=9$. For the adaptive case, these each have an effective sample size of approximately one. This is because PolyChord has successfully identified them as low evidence modes, and has saved computation time by not sampling them in more detail.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=16cm]{Pk_linf.pdf}
-    \caption{Class diagram for the Theory subclasses used to reconstruct the primordial matter power spectrum with a linear spline. \texttt{LinfPk} defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods, then the constructors for \texttt{VanillaPk} and \texttt{AdaptivePk} specifies which type of \texttt{linf} to use. \texttt{AdaptivePk} also specifies its \texttt{params} class attribute, while for the nine vanilla cases this is specified by the children of \texttt{VanillaPk}.}
-    \label{fig:PkUMLDiagram}
+  \centering
+  \includegraphics[width=16cm]{Pk_linf.pdf}
+  \caption{Class diagram for the Theory subclasses used to reconstruct the primordial matter power spectrum with a linear spline. \texttt{LinfPk} defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods, then the constructors for \texttt{VanillaPk} and \texttt{AdaptivePk} specifies which type of \texttt{linf} to use. \texttt{AdaptivePk} also specifies its \texttt{params} class attribute, while for the nine vanilla cases this is specified by the children of \texttt{VanillaPk}.}
+  \label{fig:PkUMLDiagram}
 \end{figure}
 
 \newpage
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{vanilla100.eps}
-    \caption{Functional posterior contour plots for the \textit{linf} reconstruction of the primodial matter power spectrum, with fixed numbers of nodes from 1 to 9. 100 live points was used for each of these runs.}
-    \label{fig:Pk_vanilla_100}
+  \centering
+  \includegraphics[width=16cm]{vanilla100.eps}
+  \caption{Functional posterior contour plots for the \textit{linf} reconstruction of the primodial matter power spectrum, with fixed numbers of nodes from 1 to 9. 100 live points was used for each of these runs.}
+  \label{fig:Pk_vanilla_100}
 \end{figure}
 
 \newpage
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=13cm]{PklogZ.eps}
-    \caption{Evidence values for the primordial matter power spectrum for each of the vanilla reconstructions shown in figure \ref{fig:Pk_vanilla_100}, and the adaptive reconstructions, split by $N$ value to calculate $\log{Z}$ for each.}
-    \label{fig:PklogZ}
+  \centering
+  \includegraphics[width=13cm]{PklogZ.eps}
+  \caption{Evidence values for the primordial matter power spectrum for each of the vanilla reconstructions shown in figure \ref{fig:Pk_vanilla_100}, and the adaptive reconstructions, split by $N$ value to calculate $\log{Z}$ for each.}
+  \label{fig:PklogZ}
 \end{figure}
 
 \subsection{Dark energy}
@@ -368,26 +368,26 @@ I have included some provisional posterior plots in figure \ref{fig:externalwa},
 \newpage
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=16cm]{adaptivew.eps}
-    \caption{Posterior plots using an \texttt{AdaptiveLinf} as a model for the dark energy equation of state parameter, with different values of $N_\textrm{max}$. These use the Planck 2018 likelihoods only. For $N_\textrm{max}\le 3$, $w=-1$ is still a dominant mode, as $N_\textrm{max}$ increases further, values around -1.7 to -1.5 begin to appear. This is in line with $w=-1.57_{-0.40}^{+0.50}$ calculated by Planck 2018 \cite{planck_6}.}
-    \label{fig:externalwa}
+  \centering
+  \includegraphics[width=16cm]{adaptivew.eps}
+  \caption{Posterior plots using an \texttt{AdaptiveLinf} as a model for the dark energy equation of state parameter, with different values of $N_\textrm{max}$. These use the Planck 2018 likelihoods only. For $N_\textrm{max}\le 3$, $w=-1$ is still a dominant mode, as $N_\textrm{max}$ increases further, values around -1.7 to -1.5 begin to appear. This is in line with $w=-1.57_{-0.40}^{+0.50}$ calculated by Planck 2018 \cite{planck_6}.}
+  \label{fig:externalwa}
 \end{figure}
 
 \newpage
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=13cm]{darkN.eps}
-    \caption{Histograms of posterior samples of the number of nodes of an \texttt{AdaptiveLinf} used to reconstruct the dark energy equation of state parameter. $N=0$ corresponds to $w=-1$, the cosmological constant. The first five cases use different maximum $N$, and do not favour the cosmological constant. Adding in Baryonic Acoustic Oscillations and IA supernovae data recovers the cosmological constant in the sixth plot.}
-    \label{fig:darkN}
+  \centering
+  \includegraphics[width=13cm]{darkN.eps}
+  \caption{Histograms of posterior samples of the number of nodes of an \texttt{AdaptiveLinf} used to reconstruct the dark energy equation of state parameter. $N=0$ corresponds to $w=-1$, the cosmological constant. The first five cases use different maximum $N$, and do not favour the cosmological constant. Adding in Baryonic Acoustic Oscillations and IA supernovae data recovers the cosmological constant in the sixth plot.}
+  \label{fig:darkN}
 \end{figure}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=9cm]{darkNbao.eps}
-    \caption{Posterior plots using an \texttt{AdaptiveLinf} as a model for the dark energy equation of state parameter, using the Baryonic Acoustic Oscillations and IA supernovae data in addition to the Planck likelihoods. This recovers the cosmological constant $w=-1$.}
-    \label{fig:darkNbao}
+  \centering
+  \includegraphics[width=9cm]{darkNbao.eps}
+  \caption{Posterior plots using an \texttt{AdaptiveLinf} as a model for the dark energy equation of state parameter, using the Baryonic Acoustic Oscillations and IA supernovae data in addition to the Planck likelihoods. This recovers the cosmological constant $w=-1$.}
+  \label{fig:darkNbao}
 \end{figure}
 
 \newpage
@@ -400,10 +400,10 @@ To produce results more quickly I used 100 \texttt{PolyChord} live points, inten
 Since the original paper \cite{Handley2019}, improvements have been made to \texttt{CAMB}, in particular its ability to account for the non--linear lensing effects due to matter between the surface of last scattering and Earth. However, there is an issue with the \texttt{Cobaya} documentation with respect to how to turn off these non--linear effects, so I have been unable to test whether removing them recovers the right--hand mode. This is apparent as turning this off should increase \texttt{CAMB}'s speed and therefore its oversampling factor, which has not happened.
 
 \begin{figure}[!ht]
-    \centering
-    \includegraphics[width=15cm]{N3comparison.eps}
-    \caption{Left: posterior samples of the internal node of three for the \textit{linf} primordial matter power spectrum. With 100 live points, there are two distinct modes, which \texttt{PolyChord} has identified as two separate clusters. Increasing the resolution to $25 \times N_\textrm{dims}$ causes the mode with the internal node at high $k$ to be lost. Right: posterior of the \textit{linf} function for the primordial matter power spectrum. The loss of the mode with the internal node at high $k$ means the distribution doesn't fan out on the right.}
-    \label{fig:N3}
+  \centering
+  \includegraphics[width=15cm]{N3comparison.eps}
+  \caption{Left: posterior samples of the internal node of three for the \textit{linf} primordial matter power spectrum. With 100 live points, there are two distinct modes, which \texttt{PolyChord} has identified as two separate clusters. Increasing the resolution to $25 \times N_\textrm{dims}$ causes the mode with the internal node at high $k$ to be lost. Right: posterior of the \textit{linf} function for the primordial matter power spectrum. The loss of the mode with the internal node at high $k$ means the distribution doesn't fan out on the right.}
+  \label{fig:N3}
 \end{figure}
 
 \newpage
@@ -412,54 +412,54 @@ Since the original paper \cite{Handley2019}, improvements have been made to \tex
 To investigate the clustering issue, Dr.~Handley and I have modified \texttt{PolyChord} to use a user-defined clustering algorithm. By default, \texttt{PolyChord} uses a recursive version of the K--nearest--neighbours (KNN) algorithm:
 \begin{verbatim}
 function K_nearest_neighbours(distance2_matrix[n_points, n_points]):
-    K = min(10, nlive)
-    calculate the K nearest neighbours for each point
-    do n = 2 to K:
-        if two points in either of each other's n nearest neighbours: 
-            they are in the same cluster
-        if cluster_list unchanged since n-1: return cluster_list
-        if n == K: 
-            K = min(2*K, nlive)
-            recalculate K nearest neighbours for each point
-        
-    if number of clusters >= 2: search recursively
-    return cluster_list
+  K = min(10, nlive)
+  calculate the K nearest neighbours for each point
+  do n = 2 to K:
+    if two points in either of each other's n nearest neighbours: 
+      they are in the same cluster
+    if cluster_list unchanged since n-1: return cluster_list
+    if n == K: 
+      K = min(2*K, nlive)
+      recalculate K nearest neighbours for each point
+    
+  if number of clusters >= 2: search recursively
+  return cluster_list
 \end{verbatim}
 Browsing though alternatives, K-means seems the most recommended and robust alternative \cite{MacKay2003}, and is included in the SciKit Learn Python package \cite{scikit-learn}. The K in both names is misleading as their meaning is unrelated, in KNN it refers to the number of neighbours to consider, in K-means K is number of clusters to consider.
 
 
 \begin{verbatim}
 function K_means(position_matrix[n_points, d_dimensions], K):
-    # initialisation
-    responsibilities = zeros[K, n_points]
-    means = K random positions
-    
-    # assignment
-    while means are changed since previous pass:
-        distance2 = (x-means)^2
-        for j = 1 to n:
+  # initialisation
+  responsibilities = zeros[K, n_points]
+  means = K random positions
+  
+  # assignment
+  while means are changed since previous pass:
+    distance2 = (x-means)^2
+    for j = 1 to n:
+       i_closest = 1
+       
+       for i = 2 to k:
+         if distance2[i, j] < distance2[i, j]:
+           responsibility[i_closest, j] = 0
+           responsibility[i, j] = 1
            i_closest = 1
+         elif d[i, j] == d[i_closest, j]:
+           assign to whichever has lower responsibility
            
-           for i = 2 to k:
-               if distance2[i, j] < distance2[i, j]:
-                   responsibility[i_closest, j] = 0
-                   responsibility[i, j] = 1
-                   i_closest = 1
-               elif d[i, j] == d[i_closest, j]:
-                   assign to whichever has lower responsibility
-                   
-        for i = 1 to K:
-            R = sum(responsitlities[i, :])
-            if R > 0:
-                means[i, :] = dot(responsibilities[i, n], x[n]) / R
+    for i = 1 to K:
+      R = sum(responsitlities[i, :])
+      if R > 0:
+        means[i, :] = dot(responsibilities[i, n], x[n]) / R
 \end{verbatim}
  
 K-means is not guaranteed to find the optimal set of clusters; this can be helped by carefully choosing the intial guess for the means. K-means++ uses the following initialisation steps \cite{kmeans++}:
 \begin{enumerate}
-    \item Choose one of the data points as the first mean.
-    \item Calculate the squared distance of each of the remaining points to the nearest point that has already been chosen.
-    \item Choose another point, weighted inversely to these squared distances.
-    \item Repeat steps 2 and 3 until K inital means have been chosen.
+  \item Choose one of the data points as the first mean.
+  \item Calculate the squared distance of each of the remaining points to the nearest point that has already been chosen.
+  \item Choose another point, weighted inversely to these squared distances.
+  \item Repeat steps 2 and 3 until K inital means have been chosen.
 \end{enumerate}
 While this algorithm itself takes time, it reduces the error of the result, and speeds up the convergence relative to initialising the means randomly \cite{kmeans++}.
 
@@ -480,10 +480,10 @@ To investigate the cause of this, I tried the same example with \texttt{MultiNes
 This issue is currently unsolved. At our last discussion, Dr.~Handley suspected that it is an issue where, if one cluster has more live points than the other, new live points are more likely to spawn there and cause that cluster to dominate like a P\'olya Urn --- ``the rich get richer" \cite{PolyaUrn}.
 
 \begin{figure}[!ht]
-    \centering
-    \includegraphics{polynestcomparison.eps}
-    \caption{Posterior kernel density estimate plots for a double-Gaussian likelihood in 2D, showing the first parameter marginalised over the second, for both \texttt{PolyChord} and \texttt{MultiNest}. This is repeated nine times. \texttt{MultiNest} consistently produces peaks of equal height, while \texttt{PolyChord} fails to do so seemingly at random.}
-    \label{fig:polynest}
+  \centering
+  \includegraphics{polynestcomparison.eps}
+  \caption{Posterior kernel density estimate plots for a double-Gaussian likelihood in 2D, showing the first parameter marginalised over the second, for both \texttt{PolyChord} and \texttt{MultiNest}. This is repeated nine times. \texttt{MultiNest} consistently produces peaks of equal height, while \texttt{PolyChord} fails to do so seemingly at random.}
+  \label{fig:polynest}
 \end{figure}
 
 \newpage
@@ -522,16 +522,16 @@ The above was all intended as practice for investigating the dark energy equatio
 \section{Future Plans}
 \subsection{Short term (less than three months)}
 \begin{itemize}
-    \item Watch the \textit{Machine Learning for Fundamental Physics} course and complete the exercises.
-    \item Switch to the Ice Lake partition of CSD3. The current issue is getting \texttt{Cobaya} to install the Planck Likelihoods. The greater core count will allow runs to complete more quickly.
-    \item Work out how to turn off non--linear lensing in \texttt{CAMB} via \texttt{Cobaya}, and see whether this recovers the right--hand mode in the primordial matter power spectrum. 
-    \item Understand why \texttt{PolyChord} does not recover $N=4$ for the ``line" toy example.
-    \item Finish testing \texttt{PolyChord} with custom clustering, and find a suitable replacement clustering algorithm.
-    \item Work with Dr.~Handley to fix the issue where \texttt{PolyChord} is unable to produce a balanced posterior for a symmetric double Gaussian likelihood.
-    \item Understand why anesthetic is creating samples with NaN weights and likelihoods when using \newline \texttt{external\_wa}.
-    \item Modify anesthetic to give a suitable warning when it encounters NaNs.
-    \item Modify my \texttt{external\_wa} option in \texttt{Cobaya} so that it understands automatically that the parameters for the dark energy Theory are to be sampled with the rest of the cosmological parameters.
-    \item Work through the \href{https://adventofcode.com}{Advent of Code}, but this time in FORTRAN \cite{advent}.
+  \item Watch the \textit{Machine Learning for Fundamental Physics} course and complete the exercises.
+  \item Switch to the Ice Lake partition of CSD3. The current issue is getting \texttt{Cobaya} to install the Planck Likelihoods. The greater core count will allow runs to complete more quickly.
+  \item Work out how to turn off non--linear lensing in \texttt{CAMB} via \texttt{Cobaya}, and see whether this recovers the right--hand mode in the primordial matter power spectrum. 
+  \item Understand why \texttt{PolyChord} does not recover $N=4$ for the ``line" toy example.
+  \item Finish testing \texttt{PolyChord} with custom clustering, and find a suitable replacement clustering algorithm.
+  \item Work with Dr.~Handley to fix the issue where \texttt{PolyChord} is unable to produce a balanced posterior for a symmetric double Gaussian likelihood.
+  \item Understand why anesthetic is creating samples with NaN weights and likelihoods when using \newline \texttt{external\_wa}.
+  \item Modify anesthetic to give a suitable warning when it encounters NaNs.
+  \item Modify my \texttt{external\_wa} option in \texttt{Cobaya} so that it understands automatically that the parameters for the dark energy Theory are to be sampled with the rest of the cosmological parameters.
+  \item Work through the \href{https://adventofcode.com}{Advent of Code}, but this time in FORTRAN \cite{advent}.
 \end{itemize}
 \subsection{Medium to long term (more than three months)}
 
