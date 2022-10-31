@@ -234,7 +234,7 @@ $H$ can be the order of thousands in practical problems. By considering the like
 \end{equation}
 %
 It is not usually possible to set precise values of $t$, but setting them statistically is enough. At each step, we need to find a new $X_i$ from the prior, subject to $X_i = t_i X_{i-1}<X_{i-1}$. The knowledge of this new point is specified by drawing $t_i$ from $\textrm{Uniform}(0, 1)$. This could be obtained by:
-\begin{enumerate}[label=\alph*)]
+\begin{enumerate}
   \item sampling $X_i$ uniformly from the range $[0, X_{i-1}]$ then using the original likelihood sorting to find its corresponding $\bm\theta_i$, or
   \item sample $\bm\theta$ directly subject to $L(\bm\theta)>L_{i-1}$ in proportion to the prior.
 \end{enumerate}
@@ -243,7 +243,16 @@ These methods are equivalent, but b) does not use the prior mass, so the sorting
 
 \subsection{Nested sampling algorithms}
 
+Several variants around Skilling's original nested sampling algorithm exist. In general, the posterior will be multi-modal, and is dealt with in different ways in each algorithm. 
+
+\begin{itemize}
+  \item \texttt{MultiNest}, developed by Prof.~Hobson and Dr.~Faroz, constructs a series of overlapping ellipsoids around the live points to approximate the isolikelihood contour. Multi-modal posteriors will cause the ellipsoids to separate, at which point the modes can be identified and evolved independently. 
+  \item \texttt{PolyChord} uses slice sampling to navigate the isolikelihood contour. It uses K--Nearest--Neighbours clustering on the live points to identify modes, so that each mode can be ``whitened'' independently. The modes then evolve semi-independently. \texttt{PolyChord} is discussed further in sections \ref{sec:poly} and \ref{sec:polychord_revisited}.
+  \item \texttt{dyPolyChord} and \texttt{dynesty} are dynamic nested sampling algorithms. These differ by having a dynamic number of live points, which can yield greater accuracy and efficienty when compared to traditional nested sampling. This begins with a traditional run with a small number of live points. The algorithm then calculates the importance of each sample, then finds the first ($j$) and last ($k$) live points with greater than a fraction (default 0.9 in \texttt{dyPolyChord}) of the greatest importance. Nested sampling is then repeated with more live points, starting at likelihood $L_{j-1}$ and finishing with the first sample taken with likelihood greater than $L_{k+1}$. This process is repeated until a termination condition is reached. The initial number of live points must be large enough to discover all modes of the posterior, as any modes with a maximum likelihood greater than $L_{k+1}$ will not be explored properly. This report will not discuss dynamic nested sampling further.
+\end{itemize}
+
 \subsection{PolyChord}
+\label{sec:poly}
 \texttt{PolyChord} is a nested sampling algorithm developed by my supervisors Dr.~Handley, Prof.~Hobson and Prof.~Lasenby \cite{PolyChord_1, PolyChord_2}. It is distinguished from historical implementations in how it performs the final part of the iterative step, drawing a new point from the prior subject to $L(\bm\theta)>L_{i-1}$. Skilling orignally envisaged a Markov-Chain procedure, taking steps according to a proposal distribution until an independent sample is produced. These intermediate ``phantom" points have the potential to yield more information.
 
 \texttt{PolyChord} uses slice sampling to sample within the isolikelihood contours. To slice sample, first choose a probability level ``slice" $P_0$ within $[0, P_\textrm{max}]$, then sample uniformally within the parameter space $P(\bf\theta)>P_0$. \texttt{PolyChord} adds features atop Aitken and Akman's slice-based nested sampling. It uses information present in both the live and phantom points to deal with correlated posteriors, and a clustering algorithm to identify separate posterior modes and evolve them semi-independently, calculating local evidences for each of them. It also has the option to implement fast-slow parameters, which is effective when sampling cosmologies.
@@ -264,7 +273,7 @@ $P(\hat{\bm n})$ is inspired by CosmoMC, which chooses a randomly oriented ortho
 
 \subsection{Clustering}
 
-The following step in nested sampling is clustering. A multi--modal distribution cannot be explored properly without grouping live points by their separate iso--likelihood contours, and exploring each mode independently. These modes are identified by the clustering of live points. Performing this at every iteration would add a large overhead to the calculation; in practice checking every $\mathcal{O}(n_\textrm{live})$ iterations is enough, as the live points will have compressed only by a factor of $e$ \cite{PolyChord_1}. The algorithm must be capable of identifying the number of clusters, as this is unknown. \texttt{PolyChord} uses a recursive variant of the K--nearest--neighbours, which satisfies this property. In principle, any such clustering algorithm should be sufficient, as the conditions of nested sampling mean there is no noise as each of the live points will be in exactly one of the iso--likelihood contours.
+The following step in nested sampling is clustering. A multi--modal distribution cannot be explored properly without grouping live points by their separate iso--likelihood contours, and exploring each mode independently. These modes are identified by the clustering of live points. Performing this at every iteration would add a large overhead to the calculation; in practice checking every $\mathcal{O}(n_\textrm{live})$ iterations is enough, as the live points will have compressed only by a factor of $e$ \cite{PolyChord_1}. The algorithm must be capable of identifying the number of clusters, as this is unknown. \texttt{PolyChord} uses a recursive variant of the K--nearest--neighbours, which satisfies this property. In principle, any such clustering algorithm should be sufficient, as the conditions of nested sampling mean there is no noise as each of the live points will be in exactly one of the iso--likelihood contours. When a live point dies, the new live point may appear in any of the surviving clusters, weighted by the prior volume of each cluster. A cluster dies when it contains zero live points.
 
 \subsection{Interpreting results}
 
