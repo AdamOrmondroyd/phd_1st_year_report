@@ -81,39 +81,6 @@ An alternative and currently popular approach might be to use a Gaussian Process
 
 Fitting a linear spline with a variable number of nodes is a self--consistent approach which uses Bayesian methods to constrain both the number of parameters and their values. The posterior is therefore multi--modal and degenerate, as extra nodes can always be inserted without changing the function, and more than one mode may exist for a given number of nodes, such as those seen in section \ref{sec:polychord_revisited}. Nested sampling is a natural tool to investigate such a problem, and I will focus on the \texttt{PolyChord} implementation.
 
-\section{New Context}
-\subsection{Bayes' theorem}
-Inductive logic, also known as plausible reasoning, is the problem faced by most scientists. Given that a certain set of effects have been observed, what model would have best predicted these? This is as opposed to the deductive logic usually employed in pure mathematics, and is typically a greater challenge. \cite{skilling}
-
-Starting from Cox's rules of probability one arrives at Bayes' theorem:
-
-\begin{equation}
-  \Pr({B|A}) = \frac{\Pr(A|B)\Pr(A)}{\Pr(B)} \textrm,
-\end{equation}
-%
-for events $A$ and $B$. This can be reframed as \textit{``updating the prior''}:
-\begin{equation}
-  \label{bayes-simple}
-  \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
-\end{equation}
-
-The prior represents the knowledge of the parameters of a model, before undertaking an experiment. The likelihood is the probability of observing the results of that experiment, given a set of parameters. The evidence, also known as the global likelihood, is the numerator of \ref{bayes-simple} marginalised over all possible parameters, and therefore normalises the expression. The posterior is then the updated knowledge of the parameters following the experiment.
-
-Evaluating the evidence represents the key challenge of Bayesian analysis, and one must turn to numerical methods to evaluate the high-dimensional integral. 
-
-\subsection{Numerical integration for evidence calculations}
-Numerical integration techniques in general could fill several reports by itself, so I will restrict discussion to techniques used in cosmological evidence calculations.
-
-A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-determministic. Monte Carlo integration uses the approximation
-
-\begin{equation}
-\int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm .
-\end{equation}
-%
-$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods then differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few. 
-
-As the number of dimensions increases, MCMC can too suffer from the ``curse of dimensionality'' it was designed to avoid. Shortening the Markov steps can help, but this leads to highly autocorrelated samples, so more samples are needed, and would therefore need to run for longer. MCMC is also not trivially parallelisable, aside from running multiple chains in parallel, which can be used to assess convergence. In cosmological applications, where the greatest computational cost is the generation of a new point, a different approach is needed: nested sampling.
-
 \subsection{Existing dark energy parameterisations}
 
 \subsection{Cosmological tensions}
@@ -169,6 +136,41 @@ The Einstein--Hilbert term has been replaced by the the square of the torsion co
 the linearisation of \ref{eq:lagrangian} on a matter--free, flat and torsionless background is power--counting renormalisable, unitary, and free from ghosts and tachyons. Ghosts are unphysical states in a gauge theory, which would be necessary if the local fields exceed the number of physical degrees of freedom. An example of a ghost exists in electromagnetism: one uses a four-vector potential $A_\mu(x)$, while the photon only has two polarisations \cite{Faddeev:2009}. Tachyons are particles that travel faster than light \cite{tachyon}.
 
 \ref{eq:lagrangian} produces the same cosmology as \ref{eq:einstein-hilbert}, but also allows a deviation from the vacuum expectation value which masquerades as dark radiation - a possible solution to the Hubble tension.
+
+
+
+\section{Computational Context}
+\subsection{Bayes' theorem}
+Inductive logic, also known as plausible reasoning, is the problem faced by most scientists. Given that a certain set of effects have been observed, what model would have best predicted these? This is as opposed to the deductive logic usually employed in pure mathematics, and is typically a greater challenge. \cite{skilling}
+
+Starting from Cox's rules of probability one arrives at Bayes' theorem:
+
+\begin{equation}
+  \Pr({B|A}) = \frac{\Pr(A|B)\Pr(A)}{\Pr(B)} \textrm,
+\end{equation}
+%
+for events $A$ and $B$. This can be reframed as \textit{``updating the prior''}:
+\begin{equation}
+  \label{bayes-simple}
+  \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
+\end{equation}
+
+The prior represents the knowledge of the parameters of a model, before undertaking an experiment. The likelihood is the probability of observing the results of that experiment, given a set of parameters. The evidence, also known as the global likelihood, is the numerator of \ref{bayes-simple} marginalised over all possible parameters, and therefore normalises the expression. The posterior is then the updated knowledge of the parameters following the experiment.
+
+Evaluating the evidence represents the key challenge of Bayesian analysis, and one must turn to numerical methods to evaluate the high-dimensional integral. 
+
+\subsection{Numerical integration for evidence calculations}
+Numerical integration techniques in general could fill several reports by itself, so I will restrict discussion to techniques used in cosmological evidence calculations.
+
+A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-determministic. Monte Carlo integration uses the approximation
+
+\begin{equation}
+\int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm .
+\end{equation}
+%
+$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods then differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few. 
+
+As the number of dimensions increases, MCMC can too suffer from the ``curse of dimensionality'' it was designed to avoid. Shortening the Markov steps can help, but this leads to highly autocorrelated samples, so more samples are needed, and would therefore need to run for longer. MCMC is also not trivially parallelisable, aside from running multiple chains in parallel, which can be used to assess convergence. In cosmological applications, where the greatest computational cost is the generation of a new point, a different approach is needed: nested sampling.
 
 
 \section{Nested Sampling}
