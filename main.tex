@@ -91,7 +91,7 @@ Starting from Cox's rules of probability one arrives at Bayes' theorem:
   \Pr({B|A}) = \frac{\Pr(A|B)\Pr(A)}{\Pr(B)} \textrm,
 \end{equation}
 %
-for events $A$ and $B$. This can be reframed in terms of \textit{``updating the prior''}:
+for events $A$ and $B$. This can be reframed as \textit{``updating the prior''}:
 \begin{equation}
   \label{bayes-simple}
   \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
@@ -104,7 +104,7 @@ Evaluating the evidence represents the key challenge of Bayesian analysis, and o
 \subsection{Numerical integration for evidence calculations}
 Numerical integration techniques in general could fill several reports by itself, so I will restrict discussion to techniques used in cosmological evidence calculations.
 
-A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. The Monte Carlo integration uses the approximation
+A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-determministic. Monte Carlo integration uses the approximation
 
 \begin{equation}
 \int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm .
