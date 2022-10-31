@@ -81,6 +81,96 @@ An alternative and currently popular approach might be to use a Gaussian Process
 
 Fitting a linear spline with a variable number of nodes is a self--consistent approach which uses Bayesian methods to constrain both the number of parameters and their values. The posterior is therefore multi--modal and degenerate, as extra nodes can always be inserted without changing the function, and more than one mode may exist for a given number of nodes, such as those seen in section \ref{sec:polychord_revisited}. Nested sampling is a natural tool to investigate such a problem, and I will focus on the \texttt{PolyChord} implementation.
 
+\section{New Context}
+\subsection{Bayes' theorem}
+Inductive logic, also known as plausible reasoning, is the problem faced by most scientists. Given that a certain set of effects have been observed, what model would have best predicted these? This is as opposed to the deductive logic usually employed in pure mathematics, and is typically a greater challenge. \cite{skilling}
+
+Starting from Cox's rules of probability one arrives at Bayes' theorem:
+
+\begin{equation}
+  \Pr({B|A}) = \frac{\Pr(A|B)\Pr(A)}{\Pr(B)} \textrm,
+\end{equation}
+%
+for events $A$ and $B$. This can be reframed in terms of \textit{``updating the prior''}:
+\begin{equation}
+  \label{bayes-simple}
+  \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
+\end{equation}
+
+The prior represents the knowledge of the parameters of a model, before undertaking an experiment. The likelihood is the probability of observing the results of that experiment, given a set of parameters. The evidence, also known as the global likelihood, is the numerator of \ref{bayes-simple} marginalised over all possible parameters, and therefore normalises the expression. The posterior is then the updated knowledge of the parameters following the experiment.
+
+Evaluating the evidence represents the key challenge of Bayesian analysis, and one must turn to numerical methods to evaluate the high-dimensional integral. 
+
+\subsection{Numerical integration for evidence calculations}
+Numerical integration techniques in general could fill several reports by itself, so I will restrict discussion to techniques used in cosmological evidence calculations.
+
+A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. The Monte Carlo integration uses the approximation
+
+\begin{equation}
+\int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm .
+\end{equation}
+%
+$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods then differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few. 
+
+As the number of dimensions increases, MCMC can too suffer from the ``curse of dimensionality'' it was designed to avoid. Shortening the Markov steps can help, but this leads to highly autocorrelated samples, so more samples are needed, and would therefore need to run for longer. MCMC is also not trivially parallelisable, aside from running multiple chains in parallel, which can be used to assess convergence. In cosmological applications, where the greatest computational cost is the generation of a new point, a different approach is needed: nested sampling.
+
+\subsection{Existing dark energy parameterisations}
+
+\subsection{Cosmological tensions}
+
+\subsection{Related work in the group}
+\label{sec:barker}
+
+\hl{this subsection can go at the end of the current context}
+
+If dark matter and dark energy indeed exist, it would seem natural that a ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transision in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. \hl{need to have an earlier discussion of the Hubble tension!} Theoretical work by W.E.V.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
+
+\begin{equation}
+  w_\textrm{eff} = 
+  \begin{cases}
+    \begin{aligned}
+      w_\textrm{r,eff} &= 1/3 \\
+      w_\textrm{m,eff} &= (1-1/\sqrt{3}) / 2 \approx 0.211 \\
+      w_{\Lambda \textrm{,eff}} &= 1/\sqrt{3} \approx 0.577 \textrm{.} \\
+    \end{aligned}
+  \end{cases}
+\end{equation}
+
+This arises from the Poincar\'e gauge theory (PGT), which results from gauging rotational, translational, and torsional fields \hl{is this right?}.
+
+Within gravity, we are free to use invariants of the field strengths up to second order. The Einstein field equations arise from varying from the Einstein-Hilbert action:
+
+\begin{equation}
+  \label{eq:einstein-hilbert}
+  L_\textrm T = \frac{1}{2\kappa}R - \frac{\Lambda}{\kappa} + L_\textrm M
+\end{equation}
+%
+where the gravitational portion $L_\textrm G = L_\textrm T - L_\textrm M$ is powered by the Riemann curvature, $R \equiv {R^{\mu\nu}}_{\mu\nu}$. The matter lagrangian $L_\textrm M$ provides the standard model of particle physics when below the electroweak transition temperature. Two physical scales are expressed, identified by the Einstein constant $\kappa=8\pi G$ and the cosmological constant $\Lambda$. 
+
+
+Barker /cite{barker-thesis} notes that, had the standard model predated general relativity, the theoretical minimalism of the Einstein--Hilbert action might have been called into question as it lacks quadratic terms. For example, the electromagnetic lagrangian density \hl{should I bother defining terms?}:
+
+\begin{equation}
+  \mathcal L_\textrm{EM} = -\frac{1}{4} F_{\mu\nu}F^{\mu\nu} + j_\mu A^\mu \textrm .
+\end{equation}
+
+Barker uses Poincar\'e gauge theory (PGT), which gauges rotational, translation, and torsional fields to find an alternative to \ref{eq:einstein-hilbert} constructed entirely from quadratic invariants of the Riemann-Cartan curvature $\mathcal R^{ijkl}$ and the torsion $\mathcal T^{ijk}$:
+
+\begin{equation}\begin{aligned}
+  \label{eq:lagrangian}
+  L_\textrm G = & -\frac{4}{4\kappa}\mathcal T_i\mathcal T^i - \frac{\hat{\alpha}_6}{6} [\Lambda\mathcal T_{ijk}(\mathcal T^{ijk}-2\mathcal T^{jik}) \\ & + \mathcal R_{ij}(\mathcal R ^{[ij]}-12\mathcal R^{ij}) - 2\mathcal R_{ijkl}(\mathcal R ^{ijkl}-4\mathcal R^{ikjl}-5\mathcal R^{klij})] + 2\hat{\alpha}_5\mathcal R_{[ij]}\mathcal R^{[ij]} \textrm{.}
+\end{aligned}\end{equation}
+
+The Einstein--Hilbert term has been replaced by the the square of the torsion contraction $\mathcal T_i \equiv \mathcal T^j_{ij}$, which self-couples with strength $\kappa$. The cosmological constant $\Lambda$ is also a torsion self-coupling, rather than parameterising a mysterious energy density. The values of the dimensionless self-coupling constants $\hat\alpha_5$ and $\hat\alpha_6$ are not determined, but with the conditions
+\begin{equation}
+  \Lambda > 0,\quad \hat\alpha_6<0,\quad (\hat\alpha_5+2\hat\alpha_6)(\hat\alpha_5-\hat\alpha_6) > 0 \textrm{,}
+\end{equation}
+%
+the linearisation of \ref{eq:lagrangian} on a matter--free, flat and torsionless background is power--counting renormalisable, unitary, and free from ghosts and tachyons. Ghosts are unphysical states in a gauge theory, which would be necessary if the local fields exceed the number of physical degrees of freedom. An example of a ghost exists in electromagnetism: one uses a four-vector potential $A_\mu(x)$, while the photon only has two polarisations \cite{Faddeev:2009}. Tachyons are particles that travel faster than light \cite{tachyon}.
+
+\ref{eq:lagrangian} produces the same cosmology as \ref{eq:einstein-hilbert}, but also allows a deviation from the vacuum expectation value which masquerades as dark radiation - a possible solution to the Hubble tension.
+
+
 \section{Nested Sampling}
 \subsection{The idea}
 Nested sampling is an algorithm developed by John Skilling for calculating the evidence $Z$, the probability of data given a particular model \cite{skilling} \cite{Ashton_2022}. Posterior samples are an optional by--product. This is typically in the context of Bayes theorem:
@@ -148,6 +238,8 @@ It is not usually possible to set precise values of $t$, but setting them statis
 \end{enumerate}
 
 These methods are equivalent, but b) does not use the prior mass, so the sorting step is not needed.
+
+\subsection{Nested sampling algorithms}
 
 \subsection{PolyChord}
 \texttt{PolyChord} is a nested sampling algorithm developed by my supervisors Dr.~Handley, Prof.~Hobson and Prof.~Lasenby \cite{PolyChord_1, PolyChord_2}. It is distinguished from historical implementations in how it performs the final part of the iterative step, drawing a new point from the prior subject to $L(\bm\theta)>L_{i-1}$. Skilling orignally envisaged a Markov-Chain procedure, taking steps according to a proposal distribution until an independent sample is produced. These intermediate ``phantom" points have the potential to yield more information.
@@ -342,6 +434,7 @@ I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using
 \end{figure}
 
 \subsection{Dark energy}
+\label{sec:de}
 
 All the exercise with toy sine models and the primordial matter power spectrum was building up to investigate the dark energy equation of state. The equation of state of a perfect fluid is characterised the ratio of its pressure to its density: $w = p/\rho$. The goal is to perform a similar spline ``\textit{linf}" reconstruction to $P(k)$ with $w(a)$.
 
@@ -535,11 +628,44 @@ The above was all intended as practice for investigating the dark energy equatio
 \end{itemize}
 \subsection{Medium to long term (more than three months)}
 
-Once I have finished studying the dark energy equation of state, it is only natural to probe the equations of state of the rest of the dark sector: dark matter and dark radiation, parameterised again by a linear spline. This will be less straightforward than for dark energy, as \texttt{CAMB} does not include options for varying the equation of state parameter for components other than dark energy. Therefore, I will need to modify both \texttt{CAMB} and \texttt{Cobaya} to add this feature. This work should form a suitable basis for my first paper.
+\subsubsection{}
 
-If dark matter and dark energy indeed exist, it would seem possible that dark radiation would also exist to mediate interactions between such particles \cite{Ackerman_2009}. A transition in this radiation has the potential to provide answers to the Hubble tension, the disparity between the locally measured values of $H_0$, and those measured from CMB experiments \cite{Aloni_2022}. Theoretical work by W.E.V.~Barker, another member of the group, provides a gravitational mechanism for why a fluid with $w=1/3$ might exist in the early universe, and then decay \cite{Barker_2020}. A \textit{linf} can model both the periods before and after the transition freely, and provide insight into the nature of the transition itself. This transition may have occurred at very high redshift $\mathcal{O}(10^4)$, so a \textit{linf} in $w_\textrm{dark radiation}(\log{a})$ would be more appropriate. 
+Once the different behaviour of \texttt{PolyChord} and \texttt{MultiNest} with multi-modal likelihoods has been understood, I will write this into an article. The custom clustering version of \texttt{PolyChord} will be merged into the master branch, and I will try and get the necessary changes to \texttt{Cobaya} also added to match, so that others may benefit from this analysis.
+
+Once this is finished, and a suitable clustering algorithm has been chosen, I will finish reanalysing the primordial matter power spectrum. This can also form a short paper, as if the improvements to non--linear lensing in \texttt{CAMB} are also responsible for the missing mode then it must also be demonstrated how to fix this.
+
+Once I have finished studying the dark energy equation of state, it is only natural to probe the equations of state of the rest of the dark sector: dark matter and dark radiation, parameterised again by a linear spline. This will be less straightforward than for dark energy, as \texttt{CAMB} does not include options for varying the equation of state parameter for components other than dark energy. Therefore, I will need to modify both \texttt{CAMB} and \texttt{Cobaya} to add this feature. This work should form a suitable basis for another paper.
+
+Once I have finished studying the dark energy equation of state, it is natural to probe those of dark matter, and the effective dark radiation proposed by W.E.V.~Barker discussed in section \ref{sec:barker}. The changes to \texttt{Cobaya} should be straightforward, as they will be very similar to the changes made to provide an external dark energy model. There are three paths I can take with the Boltzmann code:
+\begin{enumerate}
+  \item Modify \texttt{CAMB}. Until the Advent of Code, making changes to \texttt{PolyChord} is my only experience with FORTRAN, so I will find it most difficult to understand the existing code and where to make additions. However, this would be valuable experience, and the corresponding changes to \texttt{Cobaya} will be most straightforward.
+  \item Switch to and modify \texttt{CLASS}. This is written in C++, which I have more experience in, and I am also used to the curly-brace syntax from Java in my first undergraduate year. However, I could find \texttt{CLASS} suffers from idiosyncrasies similar to non--linear lensing in \texttt{CAMB}. I am also not familiar with the \texttt{CLASS} interface in \texttt{Cobaya}.
+  \item Switch to \texttt{PyCosmo} \cite{pycosmo}. This is an alternative Boltzmann code which generates efficient C/C++ code from \texttt{SymPy} (Symbolic Python). This represents a much faster way of adding the new components to the Boltzmann code. However, there is no interface for \texttt{PyCosmo} in \texttt{Cobaya}, which I would need to add myself. It also lacks the history and therefore testing of \texttt{CAMB} or \texttt{CLASS}.
+\end{enumerate}
+
+I will revisit this decision once the multi--modal issues with \texttt{PolyChord} have been resolved, and the priomoridal matter power spectrum and dark energy investigations are running.
+
+\subsubsection{\texttt{anesthetic.2} and {Pandas}}
+
+Dr.~Handley and \hl{L.~Hergt} plan to \texttt{anesthetic.2} in the next few months. As long as performance changes, they have updated the interface to more closely match that of \texttt{Pandas}, which \texttt{anesthetic} extends. I have found that some of the recent changes have had the side--effect of preventing some formatting parameters, such as the colour of a plot, to not be applied properly. I have corrected these issues by more closely following the structure of the overriden \texttt{Pandas} methods. However, this has led to me finding a bug in \texttt{Pandas} itself. Nested samples are weighted, which \texttt{Pandas} should be able to plot histograms and kernel density estimates out of the box. However, as discussed in section \ref{sec:de}, nested samples can contain NaN values, \texttt{Pandas} will drop when plotting. However, it cannot handle both weights and NaNs at the same time. I am working on a pull request, which will take several weeks to get merged first into the master branch, then months into the release version. Until this happens, I have provided a workaround by overriding the same methods in \texttt{anesthetic}.
+
+By adding a new component with a dynamic equation of state to my analysis, I will be able to assess whether there is evidence to support a new component, 
+A \textit{linf} can model both the periods before and after the transitions, and provide insight into the nature of the transition itself. As matter-radiation equality occurs at a redshift of around 3400 \cite{planck_6}, a \textit{linf} in $w_\textrm{dark radiation}(\log{a})$ would be more appropriate. 
+
+
 
 As a part of this work, I would similarly like to look further back with the dark energy equation of state. Once I have successfully reproduced S.~Hee's results \cite{Sonke}, I will re-parameterise $w$ as $w(\log{a})$.
+
+
+% new
+\subsection{Medium term (three months - a year)}
+\subsubsection{Programming}
+There are a number of 
+\begin{itemize}
+  \item anesthetic
+  \item Pandas
+  \item 
+\end{itemize}
 
 \section{Acknowledgements}
 
