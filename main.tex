@@ -238,12 +238,12 @@ These methods are equivalent, but b) does not use the prior mass, so the sorting
 
 \subsection{Nested sampling algorithms}
 
-Several variants around Skilling's original nested sampling algorithm exist. In general, the posterior will be multi-modal, and is dealt with in different ways in each algorithm. 
+Several variants around Skilling's original nested sampling algorithm exist. In general, the posterior will be multi-modal, and is dealt with in different ways in different algorithm. 
 
 \begin{itemize}
   \item \texttt{MultiNest}, developed by Prof.~Hobson and Dr.~Faroz, constructs a series of overlapping ellipsoids around the live points to approximate the isolikelihood contour. Multi-modal posteriors will cause the ellipsoids to separate, at which point the modes can be identified and evolved independently. 
-  \item \texttt{PolyChord} uses slice sampling to navigate the isolikelihood contour. It uses K--Nearest--Neighbours clustering on the live points to identify modes, so that each mode can be ``whitened'' independently. The modes then evolve semi-independently. \texttt{PolyChord} is discussed further in sections \ref{sec:poly} and \ref{sec:polychord_revisited}.
-  \item \texttt{dyPolyChord} and \texttt{dynesty} are dynamic nested sampling algorithms. These differ by having a dynamic number of live points, which can yield greater accuracy and efficienty when compared to traditional nested sampling. This begins with a traditional run with a small number of live points. The algorithm then calculates the importance of each sample, then finds the first ($j$) and last ($k$) live points with greater than a fraction (default 0.9 in \texttt{dyPolyChord}) of the greatest importance. Nested sampling is then repeated with more live points, starting at likelihood $L_{j-1}$ and finishing with the first sample taken with likelihood greater than $L_{k+1}$. This process is repeated until a termination condition is reached. The initial number of live points must be large enough to discover all modes of the posterior, as any modes with a maximum likelihood greater than $L_{k+1}$ will not be explored properly. This report will not discuss dynamic nested sampling further.
+  \item \texttt{PolyChord} uses slice sampling to navigate the isolikelihood contour. It applies a clustering algorithm to the live points to identify posterior modes, so that each can be ``whitened'' independently. The modes then evolve semi-independently. \texttt{PolyChord} is discussed further in sections \ref{sec:poly} and \ref{sec:polychord_revisited}.
+  \item \texttt{dyPolyChord} and \texttt{dynesty} are dynamic nested sampling algorithms. These differ by having a dynamic number of live points, which can yield greater accuracy and efficienty when compared to traditional nested sampling. This begins with a traditional run with a small number of live points. The algorithm then calculates the importance of each sample, then finds the first ($j$) and last ($k$) live points with greater than a fraction (default 0.9 in \texttt{dyPolyChord}) of the greatest importance. Nested sampling is then repeated with more live points, starting at likelihood $L_{j-1}$ and finishing with the first sample taken with likelihood greater than $L_{k+1}$. This process is repeated until a termination condition is reached. The initial number of live points must be large enough to discover all modes of the posterior, as any modes with a maximum likelihood greater than $L_{k+1}$ will not be explored properly. Therefore, it may be unsuitable for this application. This report will not discuss dynamic nested sampling further.
 \end{itemize}
 
 \subsection{PolyChord}
@@ -274,6 +274,8 @@ The following step in nested sampling is clustering. A multi--modal distribution
 
 I have used the Python packages \texttt{anesthetic} for reading nested sampling chains into Python and producing posterior plots, and \texttt{fgivenx} for producing the functional posterior plots \cite{anesthetic, fgivenx}. The functional posterior plots produce a plot of some function $f(x, \bm\theta)$ marginalised over the posterior samples of $\bm\theta$. Examples of this are shown in figures \ref{fig:toysineadaptive}, 
 \ref{fig:Pk_vanilla_100}, \ref{fig:N3} and \ref{fig:externalwa}. This provides more insight than simply plotting $f$ for the ``best fit" $\bm\theta$, as there might exist different modes of solutions that would otherwise be missed.
+
+\hl{Suspiciousness}
 
 \section{Toy Examples}
 \label{toyexamples}
@@ -659,19 +661,7 @@ By adding a new component with a dynamic equation of state to my analysis, I wil
 A \textit{linf} can model both the periods before and after the transitions, and provide insight into the nature of the transition itself. As matter-radiation equality occurs at a redshift of around 3400 \cite{planck_6}, a \textit{linf} in $w_\textrm{dark radiation}(\log{a})$ would be more appropriate. 
 
 
-
 As a part of this work, I would similarly like to look further back with the dark energy equation of state. Once I have successfully reproduced S.~Hee's results \cite{Sonke}, I will re-parameterise $w$ as $w(\log{a})$.
-
-
-% new
-\subsection{Medium term (three months - a year)}
-\subsubsection{Programming}
-There are a number of 
-\begin{itemize}
-  \item anesthetic
-  \item Pandas
-  \item 
-\end{itemize}
 
 \section{Acknowledgements}
 
