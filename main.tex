@@ -60,7 +60,7 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 \section{Cosmological Context}
 \label{sec:context}
 
-A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $P(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{P} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
+A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $P_\mathcal R(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{P_\mathcal R} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
 
 \begin{equation}
   w(a) = 
@@ -235,17 +235,18 @@ It is not usually possible to set precise values of $t$, but setting them statis
   \item sample $\bm\theta$ directly subject to $L(\bm\theta)>L_{i-1}$ in proportion to the prior.
 \end{enumerate}
 
-These methods are equivalent, but b) does not use the prior mass, so the sorting step is not needed.
+These methods are equivalent, but (b) does not use the prior mass, so the sorting step is not needed.
 
 \subsection{Nested sampling algorithms}
 
 Several variants around Skilling's original nested sampling algorithm exist. In general, the posterior will be multi-modal, and is dealt with in different ways in different algorithm. 
 
 \begin{itemize}
-  \item \texttt{MultiNest}, developed by Prof.~Hobson and Dr.~Faroz, constructs a series of overlapping ellipsoids around the live points to approximate the isolikelihood contour. Multi-modal posteriors will cause the ellipsoids to separate, at which point the modes can be identified and evolved independently. 
+  \item \texttt{MultiNest}, developed by Prof.~Hobson and Dr.~Faroz, constructs a series of overlapping ellipsoids around the live points to approximate the isolikelihood contour. Multi--modal posteriors will cause the ellipsoids to separate, at which point the modes can be identified and evolved independently. 
   \item \texttt{PolyChord} uses slice sampling to navigate the isolikelihood contour. It applies a clustering algorithm to the live points to identify posterior modes, so that each can be ``whitened'' independently. The modes then evolve semi-independently. \texttt{PolyChord} is discussed further in sections \ref{sec:poly} and \ref{sec:polychord_revisited}.
-  \item \texttt{dyPolyChord} and \texttt{dynesty} are dynamic nested sampling algorithms. These differ by having a dynamic number of live points, which can yield greater accuracy and efficienty when compared to traditional nested sampling. This begins with a traditional run with a small number of live points. The algorithm then calculates the importance of each sample, then finds the first ($j$) and last ($k$) live points with greater than a fraction (default 0.9 in \texttt{dyPolyChord}) of the greatest importance. Nested sampling is then repeated with more live points, starting at likelihood $L_{j-1}$ and finishing with the first sample taken with likelihood greater than $L_{k+1}$. This process is repeated until a termination condition is reached. The initial number of live points must be large enough to discover all modes of the posterior, as any modes with a maximum likelihood greater than $L_{k+1}$ will not be explored properly. Therefore, it may be unsuitable for this application. This report will not discuss dynamic nested sampling further.
+  \item Dynamic nested sampling differs from traditional nested sampling by using a dynamic number of live points. This can yield greater number of posterior samples for the same computational cost of traditional nested sampling. \texttt{dyPolyChord} and \texttt{dynesty} implement this by beginning with a traditional run with a small number of live points. The algorithm then calculates the importance of each sample, then finds the first ($j$) and last ($k$) live points with greater than a fraction (default 0.9 in \texttt{dyPolyChord}) of the greatest importance. Nested sampling is then repeated with more live points, starting at likelihood $L_{j-1}$ and finishing with the first sample taken with likelihood greater than $L_{k+1}$. This process is repeated until a termination condition is reached. The initial number of live points must be large enough to discover all modes of the posterior, as any modes with a maximum likelihood greater than $L_{k+1}$ will not be explored properly. Therefore, it may be unsuitable for the applications discussed here, which are highly multi--modal. \texttt{PolyChord} also implements dynamic nested sampling, but puts responsibility on the user, who must provide a function $n_\textrm{live}(L)$. Similarly, this function would be calculated using an initial low--resolution run. The low--$n_\textrm{live}$ parts of the run will contribute larger Poisson error to the volume estimate, and therefore the evidence calculation. In practice, normal nested sampling provides plenty of posterior samples, so aside from very specific applications, dynamic nested sampling is unnecessary.
 \end{itemize}
+
 
 \subsection{PolyChord}
 \label{sec:poly}
@@ -277,6 +278,8 @@ I have used the Python packages \texttt{anesthetic} for reading nested sampling 
 \ref{fig:Pk_vanilla_100}, \ref{fig:N3} and \ref{fig:externalwa}. This provides more insight than simply plotting $f$ for the ``best fit" $\bm\theta$, as there might exist different modes of solutions that would otherwise be missed.
 
 \hl{Suspiciousness}
+
+Models are often compared using the 
 
 \section{Toy Examples}
 \label{toyexamples}
@@ -379,7 +382,7 @@ The posterior distribution of $N$ for \texttt{AdaptiveLinf} are shown in figure 
 \texttt{Cobaya} (\textbf{Co}de for \textbf{bay}esian \textbf{a}nalysis) is a sampling and modelling framework, intended for use with cosmology \cite{Cobaya}. It is written in Python, and provides interfaces to work with popular cosmological models \texttt{CAMB} and CLASS, the Planck likelihoods, and can sample using either a built-in MCMC algorithm, or the nested sampler \texttt{PolyChord}. \texttt{Cobaya} takes its input from a \texttt{.yaml} file, which specifies which models and likelihoods to use, and the priors for each of the parameters. 
 
 \subsubsection{CAMB}
-\texttt{CAMB} (Code for Anisotropies in the Microwave Background) is the Cosmological Boltzmann code I have used exclusively so far \cite{CAMB_1, CAMB_2}. It is one of two Boltzmann codes to which \texttt{Cobaya} can interface, the other is \texttt{CLASS} (Cosmic Linear Anisotropy Solving System, often labelled ``\texttt{classy}" to distinguish it from the class keyword). These codes calculate the theoretical CMB power spectrum for a given set of cosmological parameters, such as the Hubble constant $H_0$, primordial matter power spectrum $P(k)$, and the dark energy equation of state parameter $w$. I chose \texttt{CAMB} over \texttt{CLASS} as \texttt{CAMB} was used in the works I have been replicating, and currently \texttt{CAMB} is faster than \texttt{CLASS}, though this is subject to change as each of the codes continues to be updated.
+\texttt{CAMB} (Code for Anisotropies in the Microwave Background) is the Cosmological Boltzmann code I have used exclusively so far \cite{CAMB_1, CAMB_2}. It is one of two Boltzmann codes to which \texttt{Cobaya} can interface, the other is \texttt{CLASS} (Cosmic Linear Anisotropy Solving System, often labelled ``\texttt{classy}" to distinguish it from the class keyword). These codes calculate the theoretical CMB power spectrum for a given set of cosmological parameters, such as the Hubble constant $H_0$, primordial matter power spectrum $P_\mathcal R(k)$, and the dark energy equation of state parameter $w$. I chose \texttt{CAMB} over \texttt{CLASS} as \texttt{CAMB} was used in the works I have been replicating, and currently \texttt{CAMB} is faster than \texttt{CLASS}, though this is subject to change as each of the codes continues to be updated.
 
 \texttt{CAMB} is written in object-oriented FORTRAN90 and interfaced via Python, which allows \texttt{CAMB} to be used interactively with the speed of compiled code. It can be parallelised using \texttt{OpenMP} (Open Multi-Processing), with almost linear scaling up to 16 processes \cite{camb_mp}. 
 
@@ -389,19 +392,19 @@ To check that I am using \texttt{Cobaya} and \texttt{CAMB} correctly, I repeated
 The primordial matter power spectrum has the form:
 
 \begin{equation}
-  P(k) = A_s \left(\frac{k}{k_\textrm{pivot}} \right) ^ {n_s - 1},
+  P_\mathcal R(k) = A_s \left(\frac{k}{k_\textrm{pivot}} \right) ^ {n_s - 1},
 \end{equation}
 %
 where $n_s$ is the scalar spectral index, and $A_s$ is the comoving curvature power at $k=k_\textrm{pivot}$ Then, taking logs of both sides, and converting to $\log_{10}{k}$ to match the literature and the original work \cite{Handley2019}, it can be seen that it is linear in log-log space, and therefore suitable for a linear spline reconstruction:
 
 \begin{equation}
-  \ln{P} = \ln{A_s} + \left(n_s - 1\right) \ln{\frac{k}{k_\textrm{pivot}}} = \ln{A_s} + \left(n_s - 1\right) \log_{10}{\frac{k}{k_\textrm{pivot}}} \ln{10}\textrm.
+  \ln{P_\mathcal R} = \ln{A_s} + \left(n_s - 1\right) \ln{\frac{k}{k_\textrm{pivot}}} = \ln{A_s} + \left(n_s - 1\right) \log_{10}{\frac{k}{k_\textrm{pivot}}} \ln{10}\textrm.
 \end{equation}
 %
-$P(k)$ is of $\mathcal{O}\left(10^{-10}\right)$, but it is good practice in computation to work with parameters of $\mathcal{O}\left(1\right)$. Therefore, $\ln{\left(10^{10}P_i\right)}$  was used as the $y$--parameter of the \textit{linf}. My code uses this scaling implicitly, i.e.\ \texttt{lnPi} refers to $\ln{\left(10^{10}P_i\right)}$.
+$P_\mathcal R(k)$ is of $\mathcal{O}\left(10^{-10}\right)$, but it is good practice in computation to work with parameters of $\mathcal{O}\left(1\right)$. Therefore, $\ln{\left(10^{10}P_i\right)}$  was used as the $y$--parameter of the \textit{linf}. My code uses this scaling implicitly, i.e.\ \texttt{lnPi} refers to $\ln{\left(10^{10}P_i\right)}$.
 
 \begin{equation}
-  P\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right) = 10^{-10} \exp{\left[{\textrm{linf}\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right)}\right]}\textrm.
+  P_\mathcal R\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right) = 10^{-10} \exp{\left[{\textrm{linf}\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}P_i\right)}\right\}\right)}\right]}\textrm.
 \end{equation}
 %
 Unlike the toy example where I was working with \texttt{PolyChord} directly, \texttt{Cobaya} understands each of the model parameters separately. Also, what \texttt{PolyChord} calls a ``prior" is the inverse cumulative distribution function of the prior, while \texttt{Cobaya} understands priors more literally. Applying this inverse to points uniformly distributed in the unit hypercube $[0, 1]^D$ returns points distributed according the the prior. Therefore, the interleaved uniform/sorted-uniform prior in my \texttt{linf} package cannot be used here. Instead, each of the $\log_{10}{k_i}$ parameters is given its own uniform prior, with the sorted constraint implemented in a separate prior, e.g:
@@ -445,7 +448,7 @@ I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using
 \subsection{Dark energy}
 \label{sec:de}
 
-All the exercise with toy sine models and the primordial matter power spectrum was building up to investigate the dark energy equation of state. The equation of state of a perfect fluid is characterised the ratio of its pressure to its density: $w = p/\rho$. The goal is to perform a similar spline ``\textit{linf}" reconstruction to $P(k)$ with $w(a)$.
+All the exercise with toy sine models and the primordial matter power spectrum was building up to investigate the dark energy equation of state. The equation of state of a perfect fluid is characterised the ratio of its pressure to its density: $w = p/\rho$. The goal is to perform a similar spline ``\textit{linf}" reconstruction to $P_\mathcal R(k)$ with $w(a)$.
 
 Since dark energy exists as an explanation for the cosmological constant, i.e.\ a fluid with $w=-1$, this needs to be reflected in the prior and \texttt{AdaptiveLinf}. Therefore, I modified my \texttt{AdaptiveLinf} so that for $N=0$ (or more accurately, $0\le N <1$) it is constant at -1. This is more appropriate than the cosmological constant being only the $w_{N_\textrm{max}-1} = 1$, $1\le N<2$ element of the entire prior volume.
 
@@ -565,7 +568,7 @@ K-means is not guaranteed to find the optimal set of clusters; this can be helpe
 \end{enumerate}
 While this algorithm itself takes time, it reduces the error of the result, and speeds up the convergence relative to initialising the means randomly \cite{kmeans++}.
 
-the other issue with K-means is that it needs to know the number of clusters to use in advance. X-means is a variant of K-means which uses subdivision to refine cluster assignments, to find the numbef of clusters which optimizes the Bayesian Information Criteria \cite{bic}. This is the clustering algorithm used by \texttt{MultiNest} \cite{Feroz_2008}.
+the other issue with K-means is that it needs to know the number of clusters to look for in advance. X-means is a variant of K-means which uses subdivision to refine cluster assignments, to find the numbef of clusters which optimizes the Bayesian Information Criteria \cite{bic}. This is the clustering algorithm used by \texttt{MultiNest} \cite{Feroz_2008}.
 
 \texttt{PolyChord} is advertised encouraging the user to experiment with different clustering algorithms \cite{PolyChord_1, PolyChord_2}, however this is not user-friendly. To familiarise myself with \texttt{PolyChord}'s clustering code, I added my own K-means algorithm in FORTRAN90, while in parallel Dr.~Handley created an interface to allow a user-defined clustering algorithm to be passed from Python. KNN only requires only the squares of the distances between live points, but a general clustering algorithm requires the absolute position matrix of the points (up to a constant offset or rotation), including K-Means. I therefore updated the interface to require the position matrix. This introduced complexity: \texttt{PolyChord} uses C++ to interface between FORTRAN and Python, C++ and Python use row-major ordering arrays, while FORTRAN is column-major. This was not a problem with the squared distance matrix as it is square and symmetric, so I had to take care to ensure the dimensions of the non-square position matrix appeared in the correct order. FORTRAN is also 1-based, and consequently the clusters need to be numbered from 1. Python clustering algorithms such as those in the SciKit Learn package number the clusters from 0, so the simplest workaround is to use a wrapper which adds 1 to the result! Since custom clustering will become a part of \texttt{PolyChord}, I will make this correction part of the interface.
 
@@ -629,7 +632,7 @@ The above was all intended as practice for investigating the dark energy equatio
   \item Work out how to turn off non--linear lensing in \texttt{CAMB} via \texttt{Cobaya}, and see whether this recovers the right--hand mode in the primordial matter power spectrum. 
   \item Understand why \texttt{PolyChord} does not recover $N=4$ for the ``line" toy example.
   \item Finish testing \texttt{PolyChord} with custom clustering, and find a suitable replacement clustering algorithm.
-  \item Work with Dr.~Handley to fix the issue where \texttt{PolyChord} is unable to produce a balanced posterior for a symmetric double Gaussian likelihood.
+  \item Work with Dr.~Handley to fix the issue where \texttt{PolyChord} is unable to produce a balanced posterior for a symmetric double Gaussian likelihood. We plan next to experiment with ideas from dynamic nested sampling.
   \item Understand why anesthetic is creating samples with NaN weights and likelihoods when using \newline \texttt{external\_wa}.
   \item Modify anesthetic to give a suitable warning when it encounters NaNs.
   \item Modify my \texttt{external\_wa} option in \texttt{Cobaya} so that it understands automatically that the parameters for the dark energy Theory are to be sampled with the rest of the cosmological parameters.
@@ -637,7 +640,7 @@ The above was all intended as practice for investigating the dark energy equatio
 \end{itemize}
 \subsection{Medium to long term (more than three months)}
 
-\subsubsection{}
+\subsubsection{Tasks which rely on fixing/understanding \texttt{PolyChord} (more succinct?)}
 
 Once the different behaviour of \texttt{PolyChord} and \texttt{MultiNest} with multi-modal likelihoods has been understood, I will write this into an article. The custom clustering version of \texttt{PolyChord} will be merged into the master branch, and I will try and get the necessary changes to \texttt{Cobaya} also added to match, so that others may benefit from this analysis.
 
@@ -663,6 +666,8 @@ A \textit{linf} can model both the periods before and after the transitions, and
 
 
 As a part of this work, I would similarly like to look further back with the dark energy equation of state. Once I have successfully reproduced S.~Hee's results \cite{Sonke}, I will re-parameterise $w$ as $w(\log{a})$.
+
+\subsection{Long term}
 
 \section{Acknowledgements}
 
