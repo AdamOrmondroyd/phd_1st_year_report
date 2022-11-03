@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{nth}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{bm}
 \usepackage{enumitem}
 \usepackage{hyperref}
@@ -180,10 +181,10 @@ for a model $\mathcal{M}$ and its parameters $\bm{\theta}$. The evidence Z is us
 
 \begin{equation}
   \mathcal{P}_{i, j} = \ln\frac{\Pr\left(D|\mathcal{M}_j\right)}{\Pr\left(D|\mathcal{M}_i\right)}
-  \mathcal{B}_{i, j} = \mathcal{B}_{i, j} + \ln\frac{\pi_{\mathcal{M}_i}}{\pi_{\mathcal{M}_j}}\textrm.
+  \mathcal{B}_{i, j} = \mathcal{B}_{i, j} + \ln\frac{\pi_{\mathcal{M}_i}}{\pi_{\mathcal{M}_j}} \textrm, \quad \mathcal B_{i, j} \coloneqq \ln\frac{Z_i}{Z_j} \textrm,
 \end{equation}
-
-The posterior odds is perhaps a more complete assessment of the relative performance of two models, but the Bayes factor is more common in the literature \cite{Sonke}. The models I consider have equal priors, so $\mathcal{P}_{i,j} = \mathcal{B}_{i,j}$ \cite{Sonke}.
+%
+where $Z_i$ is the evidence of model $\mathcal M_i$. The posterior odds is perhaps a more complete assessment of the relative performance of two models, but the Bayes factor is more common in the literature \cite{Sonke}. The models I consider have equal priors, so $\mathcal{P}_{i,j} = \mathcal{B}_{i,j}$ \cite{Sonke}.
 
 The Bayesian evidence is the normalisation of the numerator in Bayes' theorem, so in theory can be calculated by numerical integration. This becomes impractical to solve using typical numerical integration techniques, such as rastering over $\bm\theta$, once $\bm\theta$ has many dimensions. Instead, define an element of prior mass, $dX = \pi(\bm\theta)d\bm\theta$. $X$ can be accumulated from $dX$ in any order, so by defining:
 %
@@ -199,7 +200,7 @@ i.e.\ $X$ is the cumulative prior mass for likelihood greater than $\lambda$. Th
 %
 where $L(X(\lambda)) = \lambda$. This transformation requires sorting the prior mass elements by likelihood. Given the set of $m$ points:
 \begin{equation}
-  0<X_m<\dots<X_2<X_1<1, L_i = L(X_i)\textrm,
+  0<X_m<\dots<X_2<X_1<1, \quad L_i = L(X_i)\textrm,
 \end{equation}
 %
 a sensible numerical recipe would estimate $Z$ as a weighted sum:
