@@ -5,6 +5,7 @@
 \usepackage{nth}
 \usepackage{amsmath}
 \usepackage{mathtools}
+\usepackage{siunitx}
 \usepackage{bm}
 \usepackage{enumitem}
 \usepackage{hyperref}
@@ -59,13 +60,17 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 
 \section{Cosmological Context}
 \label{sec:context}
+\subsection{Cosmological tensions}
+The expansion of the universe if characterised by the Hubble parameter $H(t)=\dot{a}/a$, where $a$ is the cosmological scale factor, and its value today, the famous Hubble constant $H_0 = H(\textrm{today})$. The ``Hubble tension'' is the famous descrepency between values of $H_0$: Planck collaboration measures a value of $H_0=67.4$ \unit{km.s^{-1}.Mpc^{-1}} from the early universe, while the SH0ES team finds $H_0=73.2$ \unit{km.s^{-1}.Mpc^{-1}} using distance ladders. If this ``Hubble tension'' is not due to systematic error, then the $\Lambda$CDM cosmological model may be somehow incomplete \cite{buyers-guide}.
+
+Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surveys consistently favour a lower amplitude for matter fluctuation spectrum than expected by $\Lambda$CDM at low redshifts, $z\gtrsim 0.5 \hyphen 1$. The matter fluctuation spectrum is quantified by the parameter $S_8 \coloneqq \sigma_8 \sqrt{\Omega_\textrm m / 0.3}$. $\sigma_8$ is the root--mean--square matter fluctuation over a sphere of radius $8h^{-1}$ \unit{Mpc^{-1}}, where $h$ is the Hubble constant's dimensionless cousin ($H_0=100 h$ \unit{km.s^{-1}.Mpc^{-1}}) \cite{s8-drag}.
 
 A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $P_\mathcal R(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{P_\mathcal R} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
 
 \begin{equation}
   w(a) = 
   \begin{cases}
-  = w_0 \qquad & \textrm{(constant)} \\
+  = w_0 \qquad & \textrm{(cosmological constant)} \\
   = w_0 + (1-a) w_a \qquad & \textrm{(CPL)}\\
   = w_0 + (1-a)a w_a \qquad & \textrm{(JBP)}\\
   = w_a + (w_0-w_a) \frac{a^{1/\tau}[1-(a/a_t)^{1/\tau}]}{1-a_t^{-1/\tau}} \qquad & \textrm{(FNT),}\\
@@ -84,7 +89,6 @@ Fitting a linear spline with a variable number of nodes is a self--consistent ap
 
 \subsection{Existing dark energy parameterisations}
 
-\subsection{Cosmological tensions}
 
 \subsection{Related work in the group}
 \label{sec:barker}
@@ -652,7 +656,7 @@ Once I have finished studying the dark energy equation of state, it is natural t
 \begin{enumerate}
   \item Modify \texttt{CAMB}. Until the Advent of Code, making changes to \texttt{PolyChord} is my only experience with FORTRAN, so I will find it most difficult to understand the existing code and where to make additions. However, this would be valuable experience, and the corresponding changes to \texttt{Cobaya} will be most straightforward.
   \item Switch to and modify \texttt{CLASS}. This is written in C++, which I have more experience in, and I am also used to the curly-brace syntax from Java in my first undergraduate year. However, I could find \texttt{CLASS} suffers from idiosyncrasies similar to non--linear lensing in \texttt{CAMB}. I am also not familiar with the \texttt{CLASS} interface in \texttt{Cobaya}.
-  \item Switch to \texttt{PyCosmo} \cite{pycosmo}. This is an alternative Boltzmann code which generates efficient C/C++ code from \texttt{SymPy} (Symbolic Python). This represents a much faster way of adding the new components to the Boltzmann code. However, there is no interface for \texttt{PyCosmo} in \texttt{Cobaya}, which I would need to add myself. It also lacks the history and therefore testing of \texttt{CAMB} or \texttt{CLASS}.
+  \item Switch to \texttt{PyCosmo} \cite{pycosmo}. This is an alternative Boltzmann code which generates efficient C/C++ code from \texttt{SymPy} (Symbolic Python). This represents a much faster way of adding the new components to the Boltzmann code. However, there is no interface for \texttt{PyCosmo} in \texttt{Cobaya}, which I would need to add myself. Its relative youth also means it lacks the decade(s) of testing of \texttt{CAMB} or \texttt{CLASS}.
 \end{enumerate}
 
 I will revisit this decision once the multi--modal issues with \texttt{PolyChord} have been resolved, and the priomoridal matter power spectrum and dark energy investigations are running.
