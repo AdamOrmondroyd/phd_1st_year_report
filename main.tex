@@ -63,7 +63,7 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 \subsection{Cosmological tensions}
 The expansion of the universe if characterised by the Hubble parameter $H(t)=\dot{a}/a$, where $a$ is the cosmological scale factor, and its value today, the famous Hubble constant $H_0 \coloneqq H(\textrm{today})$. The ``Hubble tension'' is the famous descrepency between values of $H_0$: Planck collaboration measures a value of $H_0=67.4$ \unit{km.s^{-1}.Mpc^{-1}} from the early universe, while the SH0ES team finds $H_0=73.2$ \unit{km.s^{-1}.Mpc^{-1}} using distance ladders. If this ``Hubble tension'' is not due to systematic error, then the $\Lambda$CDM cosmological model may be somehow incomplete \cite{buyers-guide}.
 
-Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surveys consistently favour a lower amplitude for matter fluctuation spectrum than expected by $\Lambda$CDM at low redshifts, $z\gtrsim 0.5 \hyphen 1$. The matter fluctuation spectrum is quantified by the parameter $S_8 \coloneqq \sigma_8 \sqrt{\Omega_\textrm m / 0.3}$. $\sigma_8$ is the root--mean--square matter fluctuation over a sphere of radius $8h^{-1}$ \unit{Mpc^{-1}}, where $h$ is the Hubble constant's dimensionless cousin ($H_0=100 h$ \unit{km.s^{-1}.Mpc^{-1}}) \cite{s8-drag}.
+Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surveys consistently favour a lower amplitude for matter fluctuation spectrum than expected by $\Lambda$CDM at low redshifts, $z\gtrsim 0.5 \hyphen 1$. The matter fluctuation spectrum is quantified by the parameter $S_8 \coloneqq \sigma_8 \sqrt{\Omega_\textrm m / 0.3}$. $\sigma_8$ is the root--mean--square matter fluctuation over a sphere of radius $8h^{-1}$ \unit{Mpc^{-1}}, where $h$ is the Hubble constant's dimensionless cousin ($H_0=100 h$ \unit{km.s^{-1}.Mpc^{-1}}) \cite{s8-drag}. These measurements can also be reconciled with Planck $\Lambda$CDM cosmology, for example by modifying the matter power spectrum on non-linear scales \cite{Amon-2022}.
 
 A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $P_\mathcal R(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{P_\mathcal R} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
 
@@ -141,13 +141,13 @@ Equation \ref{eq:lagrangian} produces the same cosmology as \ref{eq:einstein-hil
 \subsection{Bayes' theorem}
 Inductive logic, also known as plausible reasoning, is the problem faced by most scientists. Given that a certain set of effects have been observed, what model would have best predicted these? This is as opposed to the deductive logic usually employed in pure mathematics, and is typically a greater challenge. \cite{skilling}
 
-Starting from Cox's rules of probability one arrives at Bayes' theorem:
+Starting from Cox's rules of probability one arrives at Bayes' theorem \cite{Sivia2006}:
 
 \begin{equation}
   \Pr({B|A}) = \frac{\Pr(A|B)\Pr(A)}{\Pr(B)} \textrm,
 \end{equation}
 %
-for events $A$ and $B$. This can be reframed as \textit{``updating the prior''}:
+for events $A$ and $B$. This can be framed as \textit{``updating the prior''}:
 \begin{equation}
   \label{bayes-simple}
   \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
