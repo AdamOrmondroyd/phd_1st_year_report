@@ -134,7 +134,7 @@ Barker uses Poincar\'e gauge theory (PGT), which gauges rotational, translation,
   \label{eq:lagrangian}
   L_\textrm G = & -\frac{4}{4\kappa}\mathcal T_i\mathcal T^i - \frac{\hat{\alpha}_6}{6} [\Lambda\mathcal T_{ijk}(\mathcal T^{ijk}-2\mathcal T^{jik}) \\ & + \mathcal R_{ij}(\mathcal R ^{[ij]}-12\mathcal R^{ij}) - 2\mathcal R_{ijkl}(\mathcal R ^{ijkl}-4\mathcal R^{ikjl}-5\mathcal R^{klij})] + 2\hat{\alpha}_5\mathcal R_{[ij]}\mathcal R^{[ij]} \textrm{.}
 \end{aligned}\end{equation}
-
+%
 The Einstein--Hilbert term has been replaced by the the square of the torsion contraction $\mathcal T_i \equiv \mathcal T^j_{ij}$, which self-couples with strength $\kappa$. The cosmological constant $\Lambda$ is also a torsion self-coupling, rather than parameterising a mysterious energy density. The values of the dimensionless self-coupling constants $\hat\alpha_5$ and $\hat\alpha_6$ are not determined, but with the conditions
 \begin{equation}
   \Lambda > 0,\quad \hat\alpha_6<0,\quad (\hat\alpha_5+2\hat\alpha_6)(\hat\alpha_5-\hat\alpha_6) > 0 \textrm{,}
@@ -160,7 +160,7 @@ for events $A$ and $B$. This can be framed as \textit{``updating the prior''}:
   \label{bayes-simple}
   \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
 \end{equation}
-
+%
 The prior represents the knowledge of the parameters of a model, before undertaking an experiment. The likelihood is the probability of observing the results of that experiment, given a set of parameters. The evidence, also known as the global likelihood, is the numerator of \ref{bayes-simple} marginalised over all possible parameters, and therefore normalises the expression. The posterior is then the updated knowledge of the parameters following the experiment.
 
 Evaluating the evidence represents the key challenge of Bayesian analysis, and one must turn to numerical methods to evaluate the high-dimensional integral. 
@@ -578,7 +578,7 @@ K-means is not guaranteed to find the optimal set of clusters; this can be helpe
 \end{enumerate}
 While this algorithm itself takes time, it reduces the error of the result, and speeds up the convergence relative to initialising the means randomly \cite{kmeans++}.
 
-the other issue with K-means is that it needs to know the number of clusters to look for in advance. X-means is a variant of K-means which uses subdivision to refine cluster assignments, to find the numbef of clusters which optimizes the Bayesian Information Criteria \cite{bic}. This is the clustering algorithm used by \texttt{MultiNest} \cite{Feroz_2008}.
+The other issue with K-means is that it needs to know the number of clusters to look for in advance. X-means is a variant of K-means which uses subdivision to refine cluster assignments, to find the numbef of clusters which optimizes the Bayesian Information Criteria \cite{bic}. This is the clustering algorithm used by \texttt{MultiNest} \cite{Feroz_2008}.
 
 \texttt{PolyChord} is advertised encouraging the user to experiment with different clustering algorithms \cite{PolyChord_1, PolyChord_2}, however this is not user-friendly. To familiarise myself with \texttt{PolyChord}'s clustering code, I added my own K-means algorithm in FORTRAN90, while in parallel Dr.~Handley created an interface to allow a user-defined clustering algorithm to be passed from Python. KNN only requires only the squares of the distances between live points, but a general clustering algorithm requires the absolute position matrix of the points (up to a constant offset or rotation), including K-Means. I therefore updated the interface to require the position matrix. This introduced complexity: \texttt{PolyChord} uses C++ to interface between FORTRAN and Python, C++ and Python use row-major ordering arrays, while FORTRAN is column-major. This was not a problem with the squared distance matrix as it is square and symmetric, so I had to take care to ensure the dimensions of the non-square position matrix appeared in the correct order. FORTRAN is also 1-based, and consequently the clusters need to be numbered from 1. Python clustering algorithms such as those in the SciKit Learn package number the clusters from 0, so the simplest workaround is to use a wrapper which adds 1 to the result! Since custom clustering will become a part of \texttt{PolyChord}, I will make this correction part of the interface.
 
