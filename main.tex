@@ -65,7 +65,7 @@ The expansion of the universe if characterised by the Hubble parameter $H(t)=\do
 
 Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surveys consistently favour a lower amplitude for matter fluctuation spectrum than expected by $\Lambda$CDM at low redshifts, $z\gtrsim 0.5 \hyphen 1$. The matter fluctuation spectrum is quantified by the parameter $S_8 \coloneqq \sigma_8 \sqrt{\Omega_\textrm m / 0.3}$. $\sigma_8$ is the root--mean--square matter fluctuation over a sphere of radius $8h^{-1}$ \unit{Mpc^{-1}}, where $h$ is the Hubble constant's dimensionless cousin ($H_0=100 h$ \unit{km.s^{-1}.Mpc^{-1}}) \cite{s8-drag}. These measurements can also be reconciled with Planck $\Lambda$CDM cosmology, for example by modifying the matter power spectrum on non-linear scales \cite{Amon-2022}.
 
-\subsection{Existing dark energy parameterisations}
+\subsection{Dark energy parameterisations}
 
 A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $\mathcal P_\mathcal R(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{\mathcal P_\mathcal R} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
 
@@ -75,13 +75,21 @@ A useful general approach in cosmology is reconstructing one--dimensional functi
   = w_0 \qquad & \textrm{(cosmological constant)} \\
   = w_0 + (1-a) w_a \qquad & \textrm{(CPL)}\\
   = w_0 + (1-a)a w_a \qquad & \textrm{(JBP)}\\
-  = w_a + (w_0-w_a) \frac{a^{1/\tau}[1-(a/a_t)^{1/\tau}]}{1-a_t^{-1/\tau}} \qquad & \textrm{(FNT),}\\
+  = w_\textrm p + (w_0-w_\textrm p) \frac{a^{1/\tau}[1-(a/a_\textrm t)^{1/\tau}]}{1-a_\textrm t^{-1/\tau}} \qquad & \textrm{(FNT),}\\
   \end{cases}
 \end{equation}
 %
-which are the constant, Chevallier--Polarski--Linder (CPL) \cite{CPL_1, CPL_2}, Jassal--Bagla--Padmanabhan (JBP) \cite{JBP}, and Felive--Nesseris--Tsujikawa (FNT) \cite{FNT} parameterisions, to name a few.
+to name a few. $w=-1$ is the famous cosmological constant. The Chevallier--Polarski--Linder parameterisation (CPL) is the first--order Taylor expansion around $a=1$, so $w_a=-\frac{dw}{da}|_{a=1}$\cite{CPL_1,CPL_2}. This approximately captures the low--redshift behaviour of light, with slow--roll scalar fields with minimal coupling, without the complexity of various potential shapes and initial conditions \cite{planck13xvi}. This parameterisation was used in the Planck 2015 and 2018 analyses; 2015 also considers a generic expansion in the scale factor:
 
-Assuming a particular functional form has limitations, ideally the data should be able to demand structure where it needs it, and simplicity where it doesn't --- a ``free--form" reconstruction. One such reconstruction is a linear spline between nodes in $(a, w)$ space, where the number of nodes is itself a parameter to be determined. This is not totally free--form, but freer than most, as the data is free to choose the level of complexity.
+\begin{equation}
+  w(a)=w_0 +\sum_{i=1}^N(1-a)^iw_i \textrm,
+\end{equation}
+%
+which is considered up to $N=3$. They find the $w_i$ are weakly constrained, and that other parameters are stable with respect to $N$, so they conclude that a linear parameterisation is sufficient \cite{planck15xiv}.
+
+The Jassal--Bagla--Padmanabhan (JBP) allows dark energy to have the same equation of state at the present epoch and at high redshifts (small $a$), with rapid variation at low redshift \cite{JBP}. Unlike CPL and JBP, the Felive--Nesseris--Tsujikawa (FNT) patameterisation depends on four parameters instead of two: $a_t$ is the scale factor at the transition epoch, $\tau$ characterises the width of the transition, $w_\textrm p$ is the equation of state parameter in the asymptotic past. It allows for fast transitions in $w$ with an extremum at $a_\textrm t/2^\tau$ \cite{FNT}.
+
+Assuming a particular functional form has limitations, ideally the data should be able to demand structure where it needs it, and simplicity where it doesn't --- a ``free--form" reconstruction. One such reconstruction is a linear spline between nodes in $(a, w)$ space, where the number of nodes is itself a parameter to be determined. This is not totally free--form, but freer than most, as the data is free to choose the level of complexity. This type of spline has been used to reconstruct the reionisation history $x_\textrm e(z)$ \cite{Millea_2018, Heimersheim_2022}.
 
 The linear spline is an appropriate choice as an appeal to simplicity. If we perform a polynomial spline between all nodes, then the requirement of continuous first and second derivatives can lead to nodes having tight error bars while lying nowhere near the original function. For example, suppose a three-node reconstruction of $f(x)$ is well constrained at low and medium $x$, but less so at large $x$. As the positions of the left and intermediate node will be well constrained, they will influence the position of the right node, attributing it a lower uncertainty than appropriate. This is not desired, the choice of polynomial has directly influenced the position and uncertainty of a node, which is at odds with a free--form approach. Therefore, a linear spline is a better description \cite{Vazquez_2012_pk}. Dark energy exists as a postulate to explain the late--time acceleration of the universe's expansion, therefore the most minimal assumptions about its dynamical behaviour must be made and tight derivative constraints would be directly at odds with this.
 
@@ -172,7 +180,7 @@ As the number of dimensions increases, MCMC can too suffer from the ``curse of d
 
 \section{Nested Sampling}
 \subsection{The idea}
-Nested sampling is an algorithm developed by John Skilling for calculating the evidence $Z$, the probability of data given a particular model \cite{skilling} \cite{Ashton_2022}. Posterior samples are an optional by--product. This is typically in the context of Bayes theorem:
+Nested sampling is an algorithm developed by John Skilling for calculating the evidence $Z$, the probability of data given a particular model \cite{skilling, Ashton_2022}. Posterior samples are an optional by--product. This is typically in the context of Bayes theorem:
 \begin{equation}
   \textrm{Posterior} = P = \Pr\left(\bm{\theta}| D, \mathcal{M}\right) = \frac{\Pr\left(D|\mathcal{M}(\bm\theta)\right) \times \Pr\left(\bm\theta\right)}{\Pr\left(D|\mathcal{M}\right)} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} = \frac{L(\bm\theta) \pi(\bm{\theta})}{Z}\textrm,
   \label{bayes}
@@ -670,7 +678,7 @@ As a part of this work, I would similarly like to look further back with the dar
 
 \subsection{Long term}
 
-There are many other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_e(z)$, late--time matter power spectrum $P(k)$, CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. The 
+There are many other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_\textrm e(z)$, late--time matter power spectrum $P(k)$, CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. The 
 
 \section{Acknowledgements}
 
