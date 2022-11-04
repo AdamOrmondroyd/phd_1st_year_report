@@ -61,7 +61,7 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 \section{Cosmological Context}
 \label{sec:context}
 \subsection{Cosmological tensions}
-The expansion of the universe if characterised by the Hubble parameter $H(t)=\dot{a}/a$, where $a$ is the cosmological scale factor, and its value today, the famous Hubble constant $H_0 = H(\textrm{today})$. The ``Hubble tension'' is the famous descrepency between values of $H_0$: Planck collaboration measures a value of $H_0=67.4$ \unit{km.s^{-1}.Mpc^{-1}} from the early universe, while the SH0ES team finds $H_0=73.2$ \unit{km.s^{-1}.Mpc^{-1}} using distance ladders. If this ``Hubble tension'' is not due to systematic error, then the $\Lambda$CDM cosmological model may be somehow incomplete \cite{buyers-guide}.
+The expansion of the universe if characterised by the Hubble parameter $H(t)=\dot{a}/a$, where $a$ is the cosmological scale factor, and its value today, the famous Hubble constant $H_0 \coloneqq H(\textrm{today})$. The ``Hubble tension'' is the famous descrepency between values of $H_0$: Planck collaboration measures a value of $H_0=67.4$ \unit{km.s^{-1}.Mpc^{-1}} from the early universe, while the SH0ES team finds $H_0=73.2$ \unit{km.s^{-1}.Mpc^{-1}} using distance ladders. If this ``Hubble tension'' is not due to systematic error, then the $\Lambda$CDM cosmological model may be somehow incomplete \cite{buyers-guide}.
 
 Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surveys consistently favour a lower amplitude for matter fluctuation spectrum than expected by $\Lambda$CDM at low redshifts, $z\gtrsim 0.5 \hyphen 1$. The matter fluctuation spectrum is quantified by the parameter $S_8 \coloneqq \sigma_8 \sqrt{\Omega_\textrm m / 0.3}$. $\sigma_8$ is the root--mean--square matter fluctuation over a sphere of radius $8h^{-1}$ \unit{Mpc^{-1}}, where $h$ is the Hubble constant's dimensionless cousin ($H_0=100 h$ \unit{km.s^{-1}.Mpc^{-1}}) \cite{s8-drag}.
 
@@ -92,7 +92,7 @@ Fitting a linear spline with a variable number of nodes is a self--consistent ap
 
 \subsection{Related work in the group}
 \label{sec:barker}
-If dark matter and dark energy indeed exist, it would seem natural that a ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transision in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. \hl{need to have an earlier discussion of the Hubble tension!} Theoretical work by Dr.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
+If dark matter and dark energy indeed exist, it would seem natural that a ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transision in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. Theoretical work by Dr.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
 
 \begin{equation}
   w_\textrm{eff} = 
@@ -114,8 +114,7 @@ Within gravity, the Lagrangian may contain invariants of the field strengths up 
 %
 where the gravitational portion $L_\textrm G = L_\textrm T - L_\textrm M$ is powered by the Riemann curvature, $R \equiv {R^{\mu\nu}}_{\mu\nu}$. The matter lagrangian $L_\textrm M$ provides the standard model of particle physics when below the electroweak transition temperature. Two physical scales are expressed, identified by the Einstein constant $\kappa=8\pi G$ and the cosmological constant $\Lambda$. 
 
-
-Barker /cite{barker-thesis} notes that, had the standard model predated general relativity, the theoretical minimalism of the Einstein--Hilbert action might have been called into question as it lacks quadratic terms. For example, the electromagnetic lagrangian density \hl{should I bother defining terms?}:
+Barker /cite{barker-thesis} notes that, had the standard model predated general relativity, the theoretical minimalism of the Einstein--Hilbert action might have been called into question as it lacks quadratic terms. For example, the electromagnetic lagrangian density:
 
 \begin{equation}
   \mathcal L_\textrm{EM} = -\frac{1}{4} F_{\mu\nu}F^{\mu\nu} + j_\mu A^\mu \textrm .
@@ -135,8 +134,7 @@ The Einstein--Hilbert term has been replaced by the the square of the torsion co
 %
 the linearisation of \ref{eq:lagrangian} on a matter--free, flat and torsionless background is power--counting renormalisable, unitary, and free from ghosts and tachyons. Ghosts are unphysical states in a gauge theory, which would be necessary if the local fields exceed the number of physical degrees of freedom. An example of a ghost exists in electromagnetism: one uses a four-vector potential $A_\mu(x)$, while the photon only has two polarisations \cite{Faddeev:2009}. Tachyons are particles that travel faster than light \cite{tachyon}.
 
-\ref{eq:lagrangian} produces the same cosmology as \ref{eq:einstein-hilbert}, but also allows a deviation from the vacuum expectation value which masquerades as dark radiation - a possible solution to the Hubble tension.
-
+Equation \ref{eq:lagrangian} produces the same cosmology as \ref{eq:einstein-hilbert}, but also allows a deviation from the vacuum expectation value which masquerades as dark radiation - a possible solution to the Hubble tension.
 
 
 \section{Computational Context}
@@ -644,11 +642,11 @@ The above was all intended as practice for investigating the dark energy equatio
 \end{itemize}
 \subsection{Medium to long term (more than three months)}
 
-\subsubsection{Tasks which rely on fixing/understanding \texttt{PolyChord} (more succinct?)}
+\subsubsection{Tasks conditional on fixing and understanding \texttt{PolyChord}}
 
 Once the different behaviour of \texttt{PolyChord} and \texttt{MultiNest} with multi-modal likelihoods has been understood, I will write this into an article. The custom clustering version of \texttt{PolyChord} will be merged into the master branch, and I will try and get the necessary changes to \texttt{Cobaya} also added to match, so that others may benefit from this analysis.
 
-Once this is finished, and a suitable clustering algorithm has been chosen, I will finish reanalysing the primordial matter power spectrum. This can also form a short paper, as if the improvements to non--linear lensing in \texttt{CAMB} are also responsible for the missing mode then it must also be demonstrated how to fix this.
+Once this is finished, and a suitable clustering algorithm has been chosen, I will finish reanalysing the primordial matter power spectrum. This may form a separate paper to the \texttt{PolyChord}--specific changes, as the improvements to non--linear lensing in \texttt{CAMB} which are responsible for the disappearance of the mode then it must also be demonstrated how to fix this.
 
 Once I have finished studying the dark energy equation of state, it is only natural to probe the equations of state of the rest of the dark sector: dark matter and dark radiation, parameterised again by a linear spline. This will be less straightforward than for dark energy, as \texttt{CAMB} does not include options for varying the equation of state parameter for components other than dark energy. Therefore, I will need to modify both \texttt{CAMB} and \texttt{Cobaya} to add this feature. This work should form a suitable basis for another paper.
 
@@ -658,12 +656,12 @@ Once I have finished studying the dark energy equation of state, it is natural t
   \item Switch to and modify \texttt{CLASS}. This is written in C++, which I have more experience in, and I am also used to the curly-brace syntax from Java in my first undergraduate year. However, I could find \texttt{CLASS} suffers from idiosyncrasies similar to non--linear lensing in \texttt{CAMB}. I am also not familiar with the \texttt{CLASS} interface in \texttt{Cobaya}.
   \item Switch to \texttt{PyCosmo} \cite{pycosmo}. This is an alternative Boltzmann code which generates efficient C/C++ code from \texttt{SymPy} (Symbolic Python). This represents a much faster way of adding the new components to the Boltzmann code. However, there is no interface for \texttt{PyCosmo} in \texttt{Cobaya}, which I would need to add myself. Its relative youth also means it lacks the decade(s) of testing of \texttt{CAMB} or \texttt{CLASS}.
 \end{enumerate}
-
+%
 I will revisit this decision once the multi--modal issues with \texttt{PolyChord} have been resolved, and the priomoridal matter power spectrum and dark energy investigations are running.
 
 \subsubsection{\texttt{anesthetic.2} and {Pandas}}
 
-Dr.~Handley and \hl{L.~Hergt} plan to \texttt{anesthetic.2} in the next few months. As long as performance changes, they have updated the interface to more closely match that of \texttt{Pandas}, which \texttt{anesthetic} extends. I have found that some of the recent changes have had the side--effect of preventing some formatting parameters, such as the colour of a plot, to not be applied properly. I have corrected these issues by more closely following the structure of the overriden \texttt{Pandas} methods. However, this has led to me finding a bug in \texttt{Pandas} itself. Nested samples are weighted, which \texttt{Pandas} should be able to plot histograms and kernel density estimates out of the box. However, as discussed in section \ref{sec:de}, nested samples can contain NaN values, \texttt{Pandas} will drop when plotting. However, it cannot handle both weights and NaNs at the same time. I am working on a pull request, which will take several weeks to get merged first into the master branch, then months into the release version. Until this happens, I have provided a workaround by overriding the same methods in \texttt{anesthetic}.
+Dr.~Handley and Dr.~Hergt (a past member of the group) plan to \texttt{anesthetic.2} in the next few months. As well as performance improvements, they have updated the interface to more closely match that of \texttt{Pandas}, which \texttt{anesthetic} extends. I have found that some of the recent changes have had the side--effect of preventing some formatting parameters, such as the colour of a plot, to not be applied properly. I have corrected these issues by more closely following the structure of the overriden \texttt{Pandas} methods. However, this has led to me finding a bug in \texttt{Pandas} itself. Nested samples are weighted, which \texttt{Pandas} should be able to plot histograms and kernel density estimates out of the box. However, as discussed in section \ref{sec:de}, nested samples can contain NaN values, \texttt{Pandas} will drop when plotting. However, it cannot handle both weights and NaNs at the same time. I am working on a pull request, which will take several weeks to get merged first into the master branch, then months into the release version. Until this happens, I have provided a workaround by overriding the same methods in \texttt{anesthetic}.
 
 By adding a new component with a dynamic equation of state to my analysis, I will be able to assess whether there is evidence to support a new component, 
 A \textit{linf} can model both the periods before and after the transitions, and provide insight into the nature of the transition itself. As matter-radiation equality occurs at a redshift of around 3400 \cite{planck_6}, a \textit{linf} in $w_\textrm{dark radiation}(\log{a})$ would be more appropriate. 
@@ -673,7 +671,7 @@ As a part of this work, I would similarly like to look further back with the dar
 
 \subsection{Long term}
 
-There are many other functions 
+There are many other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_e(z)$, late--time matter power spectrum $P(k)$, CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. The 
 
 \section{Acknowledgements}
 
