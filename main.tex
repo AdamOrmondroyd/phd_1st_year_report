@@ -61,6 +61,7 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 \section{Cosmological Context}
 \label{sec:context}
 \subsection{Cosmological tensions}
+\label{ssec:tension}
 The expansion of the universe if characterised by the Hubble parameter $H(t)=\dot{a}/a$, where $a$ is the cosmological scale factor, and its value today, the famous Hubble constant $H_0 \coloneqq H(\textrm{today})$. The ``Hubble tension'' is the famous descrepency between values of $H_0$: Planck collaboration measures a value of $H_0=67.4$ \unit{km.s^{-1}.Mpc^{-1}} from the early universe, while the SH0ES team finds $H_0=73.2$ \unit{km.s^{-1}.Mpc^{-1}} using distance ladders. If this ``Hubble tension'' is not due to systematic error, then the $\Lambda$CDM cosmological model may be somehow incomplete \cite{buyers-guide}.
 
 Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surveys consistently favour a lower amplitude for matter fluctuation spectrum than expected by $\Lambda$CDM at low redshifts, $z\gtrsim 0.5 \hyphen 1$. The matter fluctuation spectrum is quantified by the parameter $S_8 \coloneqq \sigma_8 \sqrt{\Omega_\textrm m / 0.3}$. $\sigma_8$ is the root--mean--square matter fluctuation over a sphere of radius $8h^{-1}$ \unit{Mpc^{-1}}, where $h$ is the Hubble constant's dimensionless cousin ($H_0=100 h$ \unit{km.s^{-1}.Mpc^{-1}}) \cite{s8-drag}. These measurements can also be reconciled with Planck $\Lambda$CDM cosmology, for example by modifying the matter power spectrum on non-linear scales \cite{Amon-2022}.
@@ -181,6 +182,7 @@ As the number of dimensions increases, MCMC can too suffer from the ``curse of d
 
 \section{Nested Sampling}
 \subsection{The idea}
+\label{sec:the-idea}
 Nested sampling is an algorithm developed by John Skilling for calculating the evidence $Z$, the probability of data given a particular model \cite{skilling, Ashton_2022}. Posterior samples are an optional by--product. This is typically in the context of Bayes theorem:
 \begin{equation}
   \textrm{Posterior} = P = \Pr\left(\bm{\theta}| D, \mathcal{M}\right) = \frac{\Pr\left(D|\mathcal{M}(\bm\theta)\right) \times \Pr\left(\bm\theta\right)}{\Pr\left(D|\mathcal{M}\right)} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} = \frac{L(\bm\theta) \pi(\bm{\theta})}{Z}\textrm,
@@ -247,6 +249,7 @@ It is not usually possible to set precise values of $t$, but setting them statis
 
 These methods are equivalent, but (b) does not use the prior mass, so the sorting step is not needed.
 
+\newpage
 \subsection{Nested sampling algorithms}
 
 Several variants around Skilling's original nested sampling algorithm exist. In general, the posterior will be multi-modal, and is dealt with in different ways in different algorithm. 
@@ -262,7 +265,7 @@ Several variants around Skilling's original nested sampling algorithm exist. In 
 \label{sec:poly}
 \texttt{PolyChord} is a nested sampling algorithm developed by my supervisors Dr.~Handley, Prof.~Hobson and Prof.~Lasenby \cite{PolyChord_1, PolyChord_2}. It is distinguished from historical implementations in how it performs the final part of the iterative step, drawing a new point from the prior subject to $L(\bm\theta)>L_{i-1}$. Skilling orignally envisaged a Markov-Chain procedure, taking steps according to a proposal distribution until an independent sample is produced. These intermediate ``phantom" points have the potential to yield more information.
 
-\texttt{PolyChord} uses slice sampling to sample within the isolikelihood contours. To slice sample, first choose a probability level ``slice" $P_0$ within $[0, P_\textrm{max}]$, then sample uniformally within the parameter space $P(\bf\theta)>P_0$. \texttt{PolyChord} adds features atop Aitken and Akman's slice-based nested sampling. It uses information present in both the live and phantom points to deal with correlated posteriors, and a clustering algorithm to identify separate posterior modes and evolve them semi-independently, calculating local evidences for each of them. It also has the option to implement fast-slow parameters, which is effective when sampling cosmologies.
+\texttt{PolyChord} uses slice sampling to sample within the isolikelihood contours. To slice sample, first choose a probability level ``slice" $P_0$ within $[0, P_\textrm{max}]$, then sample uniformally within the parameter space $P(\bm\theta)>P_0$. \texttt{PolyChord} adds features atop Aitken and Akman's slice-based nested sampling. It uses information present in both the live and phantom points to deal with correlated posteriors, and a clustering algorithm to identify separate posterior modes and evolve them semi-independently, calculating local evidences for each of them. It also has the option to implement fast-slow parameters, which is effective when sampling cosmologies.
 
 The \texttt{PolyChord} algorithm is written in FORTRAN, and parallelised using \texttt{OpenMPI}. \href{https://github.com/PolyChord/PolyChordLite}{\texttt{PolyChordLite}}\footnote{\href{https://github.com/PolyChord/PolyChordLite}{https://github.com/PolyChord/PolyChordLite}} uses C++ to provide a Python interface, which I have used exclusively for my cosmological work. It is optimised for the case where runtime is dominated by the cost of generating new live points. This is frequently encountered in cosmology, due to the high dimensionality and costly likelihood evaluation.
 
@@ -282,14 +285,40 @@ $P(\hat{\bm n})$ is inspired by CosmoMC, which chooses a randomly oriented ortho
 
 The following step in nested sampling is clustering. A multi--modal distribution cannot be explored properly without grouping live points by their separate iso--likelihood contours, and exploring each mode independently. These modes are identified by the clustering of live points. Performing this at every iteration would add a large overhead to the calculation; in practice checking every $\mathcal{O}(n_\textrm{live})$ iterations is enough, as the live points will have compressed only by a factor of $e$ \cite{PolyChord_1}. The algorithm must be capable of identifying the number of clusters, as this is unknown. \texttt{PolyChord} uses a recursive variant of the K--nearest--neighbours, which satisfies this property. In principle, any such clustering algorithm should be sufficient, as the conditions of nested sampling mean there is no noise as each of the live points will be in exactly one of the iso--likelihood contours. When a live point dies, the new live point may appear in any of the surviving clusters, weighted by the prior volume of each cluster. A cluster dies when it contains zero live points.
 
-\subsection{Interpreting results}
+\subsection{Displaying results}
 
 I have used the Python packages \texttt{anesthetic} for reading nested sampling chains into Python and producing posterior plots, and \texttt{fgivenx} for producing the functional posterior plots \cite{anesthetic, fgivenx}. The functional posterior plots produce a plot of some function $f(x, \bm\theta)$ marginalised over the posterior samples of $\bm\theta$. Examples of this are shown in figures \ref{fig:toysineadaptive}, 
 \ref{fig:Pk_vanilla_100}, \ref{fig:N3} and \ref{fig:externalwa}. This provides more insight than simply plotting $f$ for the ``best fit" $\bm\theta$, as there might exist different modes of solutions that would otherwise be missed.
 
-\hl{Suspiciousness}
+\subsection{Interpreting results from different datasets}
 
-Models are often compared using the 
+As mentioned in section \ref{sec:the-idea}, two models may be compared through either their Bayes factor or posterior odds ratio. However, one may also wish to compare two datasets $A$ and $B$, to assess whether they are in tension. This is usually achieved through their evidence ratio statistic $R$ \cite{Marshall_2006}:
+
+\begin{equation}
+  R = \frac{Z_{AB}}{Z_A Z_B} \textrm,
+\end{equation}
+%
+where $Z_A$ and $Z_B$ are the evidences calculated using datasets $A$ and $B$, and $Z_{AB}$ combines the datasets. $R\gg1$ is interpreted as the two datasets are consistent, while $R\ll1$ implies the datasets are consistent. For example, this is how the tension between the Dark Energy Survey (DES) and Planck measurements of $\Omega_m$ and $\sigma_8$ (see discussion of $S_8$ tension in \ref{ssec:tension} is assessed. 
+
+The Kullback--Leiber (KL) divergence quantifies the information gain, i.e. the compression of the posterior relative to the prior:
+
+\begin{equation}
+  \mathcal D_D = \int P(\bm\theta | D) \log{\frac{P(\bm\theta | D)}{\pi(\bm\theta)}}d\bm\theta \textrm.
+\end{equation}
+%
+$\log{[P(\bm\theta | D)]/\pi(\bm\theta)}$ is the Shannon information \cite{shannon} provided by the posterior relative to the prior. The KL divergence may be used to define the information ratio $I$:
+
+\begin{equation}
+  \log{I} = \mathcal D_A + \mathcal D_B - \mathcal D_{AB} \textrm.
+\end{equation}
+%
+The ratio of the evidence ratio and the information ratio quantifies the mismatch between the datasets, termed \textit{suspiciousness} $S$ \cite{suspiciousness}:
+
+\begin{equation}
+  \log{S} = \log{R} - \log{I}
+\end{equation}
+%
+ Suspiciousness is unaffected by changing the prior widths, since $I$ and $R$ change similarly under prior transormations, provided the posterior is not significantly altered. Suspiciousness is free from the prior--dependent properties of $R$, which has been misused in previous works. However, a true Bayesian should consider this kind of prior dependence a feature of $R$, rather than a bug. In fact, we should consider that if there are \textit{any} reasonable priors which result in $R\ll1$, then the datasets are in tension.
 
 \section{Toy Examples}
 \label{toyexamples}
@@ -382,7 +411,6 @@ The posterior distribution of $N$ for \texttt{AdaptiveLinf} are shown in figure 
   \label{fig:toysineadaptive}
 \end{figure}
 
-\newpage
 \newpage
 
 \section{Cosmological Applications}
