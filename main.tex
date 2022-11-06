@@ -69,7 +69,7 @@ Another cosmological tension is the ``$S_8$'' tension. Weak galaxy lensing surve
 
 \subsection{Dark energy parameterisations}
 
-A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $\mathcal P_\mathcal R(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{\mathcal P_\mathcal R} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of dark energy equation of state parameterisations exist, for example \cite{Vazquez_2012}:
+A useful general approach in cosmology is reconstructing one--dimensional functions, prime examples are the primordial matter power spectrum $\mathcal P_\mathcal R(k)$, and the equation of state parameters of various ideal fluids $w(a)$, such as dark matter or dark energy. Historically, this has been achieved by assuming a particular functional form, in the case of the power spectrum it is usually written as a power law $\log{\mathcal P_\mathcal R} \propto \log{k}$. In lieu of a theoretical understanding of dark energy, a number of equation of state parameterisations exist, for example:
 
 \begin{equation}
   w(a) = 
@@ -82,7 +82,7 @@ A useful general approach in cosmology is reconstructing one--dimensional functi
   \end{cases}
 \end{equation}
 %
-to name a few. $w0=-1$ is the famous cosmological constant. Linear $w(z)$ grows unsuitable at redshifts $z>1$, so the Chevallier--Polarski--Linder parameterisation (CPL) replaces this with the first--order Taylor expansion about $a=1$, so $w_a=-\frac{dw}{da}|_{a=1}$\cite{CPL_1,CPL_2}. This approximately captures the low--redshift behaviour of light, with slow--roll scalar fields with minimal coupling, without the complexity of various potential shapes and initial conditions \cite{planck13xvi}. This parameterisation was used in the Planck 2015 and 2018 analyses; 2015 also considers a generic expansion in the scale factor:
+to name a few \cite{Vazquez_2012}. In all of these, $w_0$ is the present--day value. $w_0=-1$ is the famous cosmological constant. Linear $w(z)$ grows unsuitable at redshifts $z>1$, so the Chevallier--Polarski--Linder parameterisation (CPL) replaces this with the first--order Taylor expansion about $a=1$, so $w_a=-\frac{dw}{da}|_{a=1}$\cite{CPL_1,CPL_2}. This approximately captures the low--redshift behaviour of light, with slow--roll scalar fields with minimal coupling, without the complexity of various potential shapes and initial conditions \cite{planck13xvi}. This parameterisation was used in the Planck 2015 and 2018 analyses; 2015 also considers a generic expansion in the scale factor:
 
 \begin{equation}
   w(a)=w_0 +\sum_{i=1}^N(1-a)^iw_i \textrm,
@@ -90,7 +90,7 @@ to name a few. $w0=-1$ is the famous cosmological constant. Linear $w(z)$ grows 
 %
 which is considered up to $N=3$. They find the $w_i$ are weakly constrained, and that other parameters are stable with respect to $N$, so conclude that a linear parameterisation is sufficient \cite{planck15xiv}.
 
-The Jassal--Bagla--Padmanabhan (JBP) allows dark energy to have the same equation of state at the present epoch and at high redshifts (small $a$), with rapid variation at low redshift \cite{JBP}. Unlike CPL and JBP, the Felive--Nesseris--Tsujikawa (FNT) patameterisation depends on four parameters instead of two: $a_t$ is the scale factor at the transition epoch, $\tau$ characterises the width of the transition, $w_\textrm p$ is the equation of state parameter in the asymptotic past. It allows for fast transitions in $w$ with an extremum at $a_\textrm t/2^\tau$ \cite{FNT}.
+The Jassal--Bagla--Padmanabhan (JBP) parameterisation allows dark energy to have the same equation of state at the present epoch and at high redshifts (small $a$), with rapid variation at low redshift \cite{JBP}. Unlike CPL and JBP, the Felive--Nesseris--Tsujikawa (FNT) patameterisation depends on four parameters instead of two: $a_t$ is the scale factor at the transition epoch, $\tau$ characterises the width of the transition, $w_\textrm p$ is the equation of state parameter in the asymptotic past. It allows for fast transitions in $w$ with an extremum at $a_\textrm t/2^\tau$ \cite{FNT}.
 
 Assuming a particular functional form has limitations, ideally the data should be able to demand structure where it needs it, and simplicity where it doesn't --- a ``free--form" reconstruction. One such reconstruction is a linear spline between nodes in $(a, w)$ space, where the number of nodes is itself a parameter to be determined. This is not totally free--form, but freer than most, as the data is free to choose the level of complexity. This type of spline has been used elsewhere to reconstruct the reionisation history $x_\textrm e(z)$ \cite{Millea_2018, Heimersheim_2022}.
 
@@ -102,7 +102,7 @@ Fitting a linear spline with a variable number of nodes is a self--consistent ap
 
 \subsection{Related work in the group}
 \label{sec:barker}
-If dark matter and dark energy indeed exist, it would seem natural that a ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transition in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. Theoretical work by Dr.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
+If dark matter and dark energy indeed exist, it would seem natural that ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transition in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. Theoretical work by Dr.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
 
 \begin{equation}
   \label{eq:dark-barker}
@@ -116,7 +116,7 @@ If dark matter and dark energy indeed exist, it would seem natural that a ``dark
   \end{cases}
 \end{equation}
 
-Within gravity, the Lagrangian may contain invariants of the field strengths up to second order. The Einstein field equations arise from varying from the Einstein-Hilbert action:
+Within gravity, the Lagrangian may contain invariants of the field strengths up to second order. The Einstein field equations arise from varying from the Einstein-Hilbert Lagrangian:
 
 \begin{equation}
   \label{eq:einstein-hilbert}
@@ -128,7 +128,7 @@ where the gravitational portion $L_\textrm G = L_\textrm T - L_\textrm M$ is pow
 Barker \cite{barker-thesis} notes that, had the standard model predated general relativity, the theoretical minimalism of the Einstein--Hilbert action might have been called into question as it lacks quadratic terms. For example, consider the electromagnetic Lagrangian density:
 
 \begin{equation}
-  \mathcal L_\textrm{EM} = -\frac{1}{4} F_{\mu\nu}F^{\mu\nu} + j_\mu A^\mu \textrm .
+  L_\textrm{EM} = -\frac{1}{4} F_{\mu\nu}F^{\mu\nu} + j_\mu A^\mu \textrm .
 \end{equation}
 
 Barker uses Poincar\'e gauge theory (PGT), which gauges rotational, translation, and torsional fields to find an alternative to \ref{eq:einstein-hilbert} constructed entirely from quadratic invariants of the Riemann-Cartan curvature $\mathcal R^{ijkl}$ and the torsion $\mathcal T^{ijk}$:
@@ -458,7 +458,7 @@ The likelihoods used in the toy examples of section \ref{toyexamples} are simila
 
 \texttt{Cobaya} has a built-in option for the user to provide their own $\mathcal P_\mathcal R(k)$. This is done by specifying \texttt{external\_primordial\_pk:} \texttt{True} in the \texttt{CAMB} block, and providing the path to a class which will provide $\mathcal P_\mathcal R(k)$. This class must inherit from \texttt{cobaya.Theory}, needs a \texttt{calculate} method which adds the $k$ and $\mathcal P_\mathcal R(k)$ values to the state dictionary, and a \texttt{get\_primordial\_scalar\_pk} method which returns this part of the state. The class variable \texttt{params} specifies the parameters required for the calculation. \texttt{CAMB} then internally uses a cubic spline between these values.
 
-I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using inheritance. The \texttt{LinfPk} inherits from \texttt{Theory}, and defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods. \texttt{calculate} depends on \texttt{self.linf}, which is specified in its child classes \texttt{VanillaPk} and \texttt{AdaptivePk}. \texttt{AdaptivePk} is complete as it specifies its own \texttt{params}, while \texttt{Vanilla[1-9]} specify them for  \texttt{VanillaPk} for the nine vanilla cases. A class diagram is shown in figure \ref{fig:PkUMLDiagram}. The functional posteriors from the vanilla cases are shown in figure \ref{fig:Pk_vanilla_100}, using 100 \texttt{PolyChord} live points. Their respective evidences are shown in figure \ref{fig:PklogZ}, along with the corresponding values for the adaptive case, split by $N$. The two sets are clearly different, in particular the most unlikely cases of $N=1$ and $N=9$. For the adaptive case, these each have an effective sample size of approximately one. This is because PolyChord has successfully identified them as low evidence modes, and has saved computation time by not sampling them in more detail.
+I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using inheritance. The \texttt{LinfPk} inherits from \texttt{Theory}, and defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods. \texttt{calculate} depends on \texttt{self.linf}, which is specified in its child classes \texttt{VanillaPk} and \texttt{AdaptivePk}. \texttt{AdaptivePk} is complete as it specifies its own \texttt{params}, while \texttt{Vanilla[1-9]} specify them for  \texttt{VanillaPk} for the nine vanilla cases. A class diagram is shown in figure \ref{fig:PkUMLDiagram}. The functional posteriors from the vanilla cases are shown in figure \ref{fig:Pk_vanilla_100}, using 100 \texttt{PolyChord} live points. Their respective evidences are shown in figure \ref{fig:PklogZ}, along with the corresponding values for the adaptive case, split by $N$. The two sets are clearly different, in particular the most unlikely cases of $N=1$ and $N=9$. For the adaptive case, these each have an effective sample size of approximately one. This is because \texttt{PolyChord} has successfully identified them as low evidence modes, and has saved computation time by not sampling them in more detail.
 
 \begin{figure}
   \centering
