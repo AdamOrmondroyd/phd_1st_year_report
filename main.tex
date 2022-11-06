@@ -102,7 +102,7 @@ Fitting a linear spline with a variable number of nodes is a self--consistent ap
 
 \subsection{Related work in the group}
 \label{sec:barker}
-If dark matter and dark energy indeed exist, it would seem natural that a ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transision in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. Theoretical work by Dr.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
+If dark matter and dark energy indeed exist, it would seem natural that a ``dark radiation'' would also exist to mediate the interactions between such particles \cite{Ackerman_2009}. A transition in the behaviour of this radiation has the potential to answer the Hubble tension \cite{Aloni_2022}. Theoretical work by Dr.~Barker, another member of the group, provides a gravitational mechanism for this \cite{Barker_2020}. This work explores a one-parameter extension to $\Lambda$CDM, an effective dark radiation which tracks the dominant equation of state parameter of the current epoch: 
 
 \begin{equation}
   \label{eq:dark-barker}
@@ -123,9 +123,9 @@ Within gravity, the Lagrangian may contain invariants of the field strengths up 
   L_\textrm T = \frac{1}{2\kappa}R - \frac{\Lambda}{\kappa} + L_\textrm M \textrm,
 \end{equation}
 %
-where the gravitational portion $L_\textrm G = L_\textrm T - L_\textrm M$ is powered by the Riemann curvature, $R \equiv {R^{\mu\nu}}_{\mu\nu}$. The matter lagrangian $L_\textrm M$ provides the standard model of particle physics when below the electroweak transition temperature. Two physical scales are expressed, identified by the Einstein constant $\kappa=8\pi G$ and the cosmological constant $\Lambda$. 
+where the gravitational portion $L_\textrm G = L_\textrm T - L_\textrm M$ is powered by the Riemann curvature, $R \equiv {R^{\mu\nu}}_{\mu\nu}$. The matter Lagrangian $L_\textrm M$ provides the standard model of particle physics when below the electroweak transition temperature. Two physical scales are expressed, identified by the Einstein constant $\kappa=8\pi G$ and the cosmological constant $\Lambda$. 
 
-Barker \cite{barker-thesis} notes that, had the standard model predated general relativity, the theoretical minimalism of the Einstein--Hilbert action might have been called into question as it lacks quadratic terms. For example, consider the electromagnetic lagrangian density:
+Barker \cite{barker-thesis} notes that, had the standard model predated general relativity, the theoretical minimalism of the Einstein--Hilbert action might have been called into question as it lacks quadratic terms. For example, consider the electromagnetic Lagrangian density:
 
 \begin{equation}
   \mathcal L_\textrm{EM} = -\frac{1}{4} F_{\mu\nu}F^{\mu\nu} + j_\mu A^\mu \textrm .
@@ -171,7 +171,7 @@ Evaluating the evidence represents the key challenge of Bayesian analysis, and o
 \subsection{Numerical integration for evidence calculations}
 Numerical integration techniques in general could fill several reports by itself, so I will restrict discussion to techniques used in cosmological evidence calculations.
 
-A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-determministic. Monte Carlo integration uses the approximation \cite{intro-to-mc}:
+A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-deterministic. Monte Carlo integration uses the approximation \cite{intro-to-mc}:
 
 \begin{equation}
 \int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm.
@@ -267,7 +267,7 @@ Several variants around Skilling's original nested sampling algorithm exist. In 
 \label{sec:poly}
 \texttt{PolyChord} is a nested sampling algorithm developed by my supervisors Dr.~Handley, Prof.~Hobson and Prof.~Lasenby \cite{PolyChord_1, PolyChord_2}. It is distinguished from historical implementations in how it performs the final part of the iterative step, drawing a new point from the prior subject to $L(\bm\theta)>L_{i-1}$. Skilling orignally envisaged a Markov-Chain procedure, taking steps according to a proposal distribution until an independent sample is produced. These intermediate ``phantom" points have the potential to yield more information.
 
-\texttt{PolyChord} uses slice sampling to sample within the isolikelihood contours. To slice sample, first choose a probability level ``slice" $P_0$ within $[0, P_\textrm{max}]$, then sample uniformally within the parameter space $P(\bm\theta)>P_0$. \texttt{PolyChord} adds features atop Aitken and Akman's slice-based nested sampling. It uses information present in both the live and phantom points to deal with correlated posteriors, and a clustering algorithm to identify separate posterior modes and evolve them semi-independently, calculating local evidences for each of them. It also has the option to implement fast-slow parameters, which is effective when sampling cosmologies.
+\texttt{PolyChord} uses slice sampling to sample within the isolikelihood contours. To slice sample, first choose a probability level ``slice" $P_0$ within $[0, P_\textrm{max}]$, then sample uniformly within the parameter space $P(\bm\theta)>P_0$. \texttt{PolyChord} adds features atop Aitken and Akman's slice-based nested sampling. It uses information present in both the live and phantom points to deal with correlated posteriors, and a clustering algorithm to identify separate posterior modes and evolve them semi-independently, calculating local evidences for each of them. It also has the option to implement fast-slow parameters, which is effective when sampling cosmologies.
 
 The \texttt{PolyChord} algorithm is written in FORTRAN, and parallelised using \texttt{OpenMPI}. \href{https://github.com/PolyChord/PolyChordLite}{\texttt{PolyChordLite}}\footnote{\href{https://github.com/PolyChord/PolyChordLite}{https://github.com/PolyChord/PolyChordLite}} uses C++ to provide a Python interface, which I have used exclusively for my cosmological work. It is optimised for the case where runtime is dominated by the cost of generating new live points. This is frequently encountered in cosmology, due to the high dimensionality and costly likelihood evaluation.
 
@@ -300,7 +300,7 @@ As mentioned in section \ref{sec:the-idea}, two models may be compared through e
   R = \frac{Z_{AB}}{Z_A Z_B} \textrm,
 \end{equation}
 %
-where $Z_A$ and $Z_B$ are the evidences calculated using datasets $A$ and $B$, and $Z_{AB}$ combines the datasets. $R\gg1$ is interpreted as the two datasets are consistent, while $R\ll1$ implies the datasets are consistent. For example, this is how the tension between the Dark Energy Survey (DES) and Planck measurements of $\Omega_m$ and $\sigma_8$ (see discussion of $S_8$ tension in \ref{ssec:tension}) is assessed \cite{suspiciousness}. 
+where $Z_A$ and $Z_B$ are the evidences calculated using each dataset, and $Z_{AB}$ combines the datasets. $R\gg1$ is interpreted as the two datasets are consistent, while $R\ll1$ implies the datasets are consistent. For example, this is how the tension between the Dark Energy Survey (DES) and Planck measurements of $\Omega_m$ and $\sigma_8$ (see discussion of $S_8$ tension in \ref{ssec:tension}) is assessed \cite{suspiciousness}. 
 
 The Kullback--Leiber (KL) divergence quantifies the information gain, i.e. the compression of the posterior relative to the prior:
 
@@ -320,7 +320,7 @@ The ratio of the evidence ratio and the information ratio quantifies the mismatc
   \log{S} = \log{R} - \log{I}
 \end{equation}
 %
- Suspiciousness is unaffected by changing the prior widths, since $I$ and $R$ change similarly under prior transormations, provided the posterior is not significantly altered. Suspiciousness is free from the prior--dependent properties of $R$, which has been misused in previous works. However, a true Bayesian should consider this kind of prior dependence a feature of $R$, rather than a bug. In fact, we should consider that if there are \textit{any} reasonable priors which result in $R\ll1$, then the datasets are in tension.
+ Suspiciousness is unaffected by changing the prior widths, since $I$ and $R$ change similarly under prior transformations, provided the posterior is not significantly altered. Suspiciousness is free from the prior--dependent properties of $R$, which has been misused in previous works. However, a true Bayesian should consider this kind of prior dependence a feature of $R$, rather than a bug. In fact, we should consider that if there are \textit{any} reasonable priors which result in $R\ll1$, then the datasets are in tension.
 
 \section{Toy Examples}
 \label{toyexamples}
@@ -472,7 +472,7 @@ I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using
 \begin{figure}[H]
   \centering
   \includegraphics[width=16cm]{vanilla100.eps}
-  \caption{Functional posterior contour plots for the \textit{linf} reconstruction of the primodial matter power spectrum, with fixed numbers of nodes from 1 to 9. 100 live points was used for each of these runs.}
+  \caption{Functional posterior contour plots for the \textit{linf} reconstruction of the primordial matter power spectrum, with fixed numbers of nodes from 1 to 9. 100 live points was used for each of these runs.}
   \label{fig:Pk_vanilla_100}
 \end{figure}
 
@@ -604,11 +604,11 @@ K-means is not guaranteed to find the optimal set of clusters; this can be helpe
   \item Choose one of the data points as the first mean.
   \item Calculate the squared distance of each of the remaining points to the nearest point that has already been chosen.
   \item Choose another point, weighted inversely to these squared distances.
-  \item Repeat steps 2 and 3 until K inital means have been chosen.
+  \item Repeat steps 2 and 3 until K initial means have been chosen.
 \end{enumerate}
 While this algorithm itself takes time, it reduces the error of the result, and speeds up the convergence relative to initialising the means randomly \cite{kmeans++}.
 
-The other issue with K-means is that it needs to know the number of clusters to look for in advance. X-means is a variant of K-means which uses subdivision to refine cluster assignments, to find the numbef of clusters which optimizes the Bayesian Information Criteria \cite{bic}. This is the clustering algorithm used by \texttt{MultiNest} \cite{Feroz_2008}.
+The other issue with K-means is that it needs to know the number of clusters to look for in advance. X-means is a variant of K-means which uses subdivision to refine cluster assignments, to find the number of clusters which optimises the Bayesian Information Criteria \cite{bic}. This is the clustering algorithm used by \texttt{MultiNest} \cite{Feroz_2008}.
 
 \texttt{PolyChord} is advertised encouraging the user to experiment with different clustering algorithms \cite{PolyChord_1, PolyChord_2}, however this is not user-friendly. To familiarise myself with \texttt{PolyChord}'s clustering code, I added my own K-means algorithm in FORTRAN90, while in parallel Dr.~Handley created an interface to allow a user-defined clustering algorithm to be passed from Python. KNN only requires only the squares of the distances between live points, but a general clustering algorithm requires the absolute position matrix of the points (up to a constant offset or rotation), including K-Means. I therefore updated the interface to require the position matrix. This introduced complexity: \texttt{PolyChord} uses C++ to interface between FORTRAN and Python, C++ and Python use row-major ordering arrays, while FORTRAN is column-major. This was not a problem with the squared distance matrix as it is square and symmetric, so I had to take care to ensure the dimensions of the non-square position matrix appeared in the correct order. FORTRAN is also 1-based, and consequently the clusters need to be numbered from 1. Python clustering algorithms such as those in the SciKit Learn package number the clusters from 0, so the simplest workaround is to use a wrapper which adds 1 to the result! Since custom clustering will become a part of \texttt{PolyChord}, I will make this correction part of the interface.
 
@@ -707,7 +707,7 @@ As a part of this work, I would similarly like to look further back with the dar
 
 \subsection{Long term}
 
-There are other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_\textrm e(z)$, late--time matter power spectrum $P(k)$, inflation potential $V(\phi)$ CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. A more ambitious reconstruction will be the quantum mechanical initial conditions for inflation, $A_k$ and $B_k$. These are complex numbers, which must satify $\norm{B_k}^2-\norm{A_k}^2=1$ for quantum mechanical normalisation, so one challenge will be determining the most appropriate prior transform which encaptures this \cite{shumaylov2022}.
+There are other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_\textrm e(z)$, late--time matter power spectrum $P(k)$, inflation potential $V(\phi)$ CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. A more ambitious reconstruction will be the quantum mechanical initial conditions for inflation, $A_k$ and $B_k$. These are complex numbers, which must satisfy $\norm{B_k}^2-\norm{A_k}^2=1$ for quantum mechanical normalisation, so one challenge will be determining the most appropriate prior transform which captures this \cite{shumaylov2022}.
 
 The final aim will be to perform simultaneous reconstructions, for example $x_\textrm e(z)$ and $\mathcal P_\mathcal R(k)$, $(A_k, B_k)$ and $V(\phi)$, and $\mathcal P(k)$ and $w(a)$. Allowing simultaneous changes to cosmological modelling may provide clues as to the cause of the underlying physical causes of parameter tensions.
 
