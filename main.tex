@@ -164,20 +164,20 @@ for events $A$ and $B$. This can be framed as \textit{``updating the prior''}:
   \textrm{Posterior} = \frac{\textrm{Likelihood} \times \textrm{Prior}}{\textrm{Evidence}} \textrm .
 \end{equation}
 %
-The prior represents the knowledge of the parameters of a model, before undertaking an experiment. The likelihood is the probability of observing the results of that experiment, given a set of parameters. The evidence, also known as the global likelihood, is the numerator of \ref{bayes-simple} marginalised over all possible parameters, and therefore normalises the expression. The posterior is then the updated knowledge of the parameters following the experiment.
+The prior represents the knowledge of the parameters of a model, before undertaking an experiment. The likelihood is the probability of observing the results of that experiment, given a set of parameters. The evidence, also known as the global likelihood, is the numerator of equation \ref{bayes-simple} marginalised over all possible parameters, and therefore normalises the expression. The posterior is then the updated knowledge of the parameters following the experiment.
 
 Evaluating the evidence represents the key challenge of Bayesian analysis, and one must turn to numerical methods to evaluate the high-dimensional integral. 
 
 \subsection{Numerical integration for evidence calculations}
 Numerical integration techniques in general could fill several reports by itself, so I will restrict discussion to techniques used in cosmological evidence calculations.
 
-A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-determministic. Monte Carlo integration uses the approximation
+A Monte Carlo algorithm is a randomised algorithm, whose result will differ from the true result with known probability. Unlike deterministic approaches such as trapezoid rule, Monte Carlo algorithms are non-determministic. Monte Carlo integration uses the approximation \cite{intro-to-mc}:
 
 \begin{equation}
-\int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm .
+\int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm.
 \end{equation}
 %
-$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods then differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few. 
+$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods then differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few \cite{mc-sampling-methods}. 
 
 As the number of dimensions increases, MCMC can too suffer from the ``curse of dimensionality'' it was designed to avoid. Shortening the Markov steps can help, but this leads to highly autocorrelated samples, so more samples are needed, and would therefore need to run for longer. MCMC is also not trivially parallelisable, aside from running multiple chains in parallel, which can be used to assess convergence. In cosmological applications, where the greatest computational cost is the generation of a new point, a different approach is needed: nested sampling.
 
@@ -707,7 +707,7 @@ As a part of this work, I would similarly like to look further back with the dar
 
 \subsection{Long term}
 
-There are other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_\textrm e(z)$, late--time matter power spectrum $P(k)$, inflation potential $V(\phi)$ CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. A more ambitious reconstruction will be the quantum mechanical initial conditions for inflation, $A_k$ and $B_k$. These are complex numbers, which must satify $\norm{B_k}^2-\norm{A_k}^2=1$ for quantum mechanical normalisation, so one challenge will be determining an appropriate prior transform \cite{shumaylov2022}.
+There are other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_\textrm e(z)$, late--time matter power spectrum $P(k)$, inflation potential $V(\phi)$ CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. A more ambitious reconstruction will be the quantum mechanical initial conditions for inflation, $A_k$ and $B_k$. These are complex numbers, which must satify $\norm{B_k}^2-\norm{A_k}^2=1$ for quantum mechanical normalisation, so one challenge will be determining the most appropriate prior transform which encaptures this \cite{shumaylov2022}.
 
 The final aim will be to perform simultaneous reconstructions, for example $x_\textrm e(z)$ and $\mathcal P_\mathcal R(k)$, $(A_k, B_k)$ and $V(\phi)$, and $\mathcal P(k)$ and $w(a)$. Allowing simultaneous changes to cosmological modelling may provide clues as to the cause of the underlying physical causes of parameter tensions.
 
