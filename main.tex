@@ -131,7 +131,7 @@ Barker \cite{barker-thesis} notes that, had the standard model predated general 
   L_\textrm{EM} = -\frac{1}{4} F_{\mu\nu}F^{\mu\nu} + j_\mu A^\mu \textrm .
 \end{equation}
 
-Barker uses Poincar\'e gauge theory (PGT), which gauges rotational, translation, and torsional fields to find an alternative to \ref{eq:einstein-hilbert} constructed entirely from quadratic invariants of the Riemann-Cartan curvature $\mathcal R^{ijkl}$ and the torsion $\mathcal T^{ijk}$:
+Barker uses Poincar\'e gauge theory (PGT), which gauges rotational, translation, and torsional fields, to find an alternative to \ref{eq:einstein-hilbert} constructed entirely from quadratic invariants of the Riemann-Cartan curvature $\mathcal R^{ijkl}$ and the torsion $\mathcal T^{ijk}$:
 
 \begin{equation}\begin{aligned}
   \label{eq:lagrangian}
@@ -177,9 +177,9 @@ A Monte Carlo algorithm is a randomised algorithm, whose result will differ from
 \int_\Omega f(x) dx \approx V \frac{1}{N}\sum_{i=1}^{N} f(x_i) \textrm.
 \end{equation}
 %
-$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods then differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few \cite{mc-sampling-methods}. 
+$V$ is the volume of the integration domain $\Omega$. Monte Carlo integration methods differ by how the samples $x_i$ are generated. The most vanilla Monte Carlo integration simply draws samples at random from $x$. This algorithm is at risk of missing small regions of $\Omega$ containing large contributions to the integral, which is the case for most high-dimensional integrals. This can be improved using importance sampling: drawing samples from a probability distribution which weighted towards the regions of high $f$. Markov chain Monte Carlo (MCMC) starts with a random point, and a Markov chain is constructed from it. There are many algorithms for constructing the chain, Metropolis Hastings, Gibbs sampling, slice sampling, to name a few \cite{mc-sampling-methods}. 
 
-As the number of dimensions increases, MCMC can too suffer from the ``curse of dimensionality'' it was designed to avoid. Shortening the Markov steps can help, but this leads to highly autocorrelated samples, so more samples are needed, and would therefore need to run for longer. MCMC is also not trivially parallelisable, aside from running multiple chains in parallel, which can be used to assess convergence. In cosmological applications, where the greatest computational cost is the generation of a new point, a different approach is needed: nested sampling.
+As the number of dimensions increases, MCMC can too suffer from the ``curse of dimensionality'' it was designed to avoid. Shortening the Markov steps can help, but this leads to highly autocorrelated samples, so more samples are needed, and would therefore need to run for longer. MCMC is also not trivially parallelisable, aside from running multiple chains in parallel, which can be used to assess convergence \cite{mcmc-convergence}. In cosmological applications, where the greatest computational cost is the generation of a new point, a different approach is needed: nested sampling.
 
 
 \section{Nested Sampling}
@@ -709,7 +709,7 @@ As a part of this work, I would similarly like to look further back with the dar
 
 There are other functions ripe for similar non-parametric reconstructions, for example the reionisation history $x_\textrm e(z)$, late--time matter power spectrum $P(k)$, inflation potential $V(\phi)$ CMB power spectra $C_\ell$ and lensing spectra $C_l^{\phi\phi}$. A more ambitious reconstruction will be the quantum mechanical initial conditions for inflation, $A_k$ and $B_k$. These are complex numbers, which must satisfy $\norm{B_k}^2-\norm{A_k}^2=1$ for quantum mechanical normalisation, so one challenge will be determining the most appropriate prior transform which captures this \cite{shumaylov2022}.
 
-The final aim will be to perform simultaneous reconstructions, for example $x_\textrm e(z)$ and $\mathcal P_\mathcal R(k)$, $(A_k, B_k)$ and $V(\phi)$, and $\mathcal P(k)$ and $w(a)$. Allowing simultaneous changes to cosmological modelling may provide clues as to the cause of the underlying physical causes of parameter tensions.
+The final aim will be to perform simultaneous reconstructions, for example $x_\textrm e(z)$ and $\mathcal P_\mathcal R(k)$, $(A_k, B_k)$ and $V(\phi)$, and $\mathcal P(k)$ and $w(a)$. Making these simultaneous changes to cosmological modelling may provide clues as to the cause of the underlying physical causes of parameter tensions.
 
 \section{Acknowledgements}
 
