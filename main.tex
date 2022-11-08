@@ -570,7 +570,7 @@ function K_nearest_neighbours(distance2_matrix[n_points, n_points]):
   if number of clusters >= 2: search recursively
   return cluster_list
 \end{verbatim}
-Browsing through alternatives, K-means seems the most recommended and robust alternative \cite{MacKay2003}, and is included in the SciKit Learn Python package \cite{scikit-learn}. The K in both names is misleading as their meaning is unrelated, in KNN it refers to the number of neighbours to consider, in K-means K is number of clusters to consider.
+Browsing through alternatives, K-means seems the most recommended and robust alternative \cite{MacKay2003}, and included in the SciKit Learn Python package \cite{scikit-learn}. The K in both names is misleading as their meaning is unrelated, in KNN it refers to the number of neighbours to consider, in K-means K is number of clusters to consider.
 
 
 \begin{verbatim}
@@ -646,7 +646,7 @@ As my funding is from the Centre for Doctoral Training, I attended several cours
 \section{Computing}
 A significant part of my learning this year has been gaining relevant computational skills. At the start of the year, I was comfortable using Windows, coding with my favourite editor Visual Studio Code. I was supposed to be provided with a MacBook, however this didn't arrive until early February. \texttt{PolyChord} is compatible only with Unix-based operating systems, so I wouldn't be able to learn how to use it on my Windows laptop. Therefore, I started using CSD3 (Cambridge Service for Data-Driven Discovery), a supercomputer accessed via SSH (secure shell). This overcame the compatibility issue with \texttt{PolyChord} and was good practice for using the service. Initially I worked mainly using the login nodes, but these are intended to serve as an interface for submitting jobs to the compute nodes, which I would need to use to perform cosmological runs.
 
-I have continued to use Visual Studio Code as my primary editor, as it has a \texttt{Remote - SSH} extension which allows near-seamless connection to a remote workspace. However, I found it limiting being unfamiliar with editing files directly in the terminal, as it is not convenient to have to create a VS Code workspace every time I edit a file. Therefore, I took some time to work through \textit{10-Minute Vim} to learn to use the editor \cite{vim}. I am starting to prefer using Vim keybindings, I use them in VS Code to edit text files, use \texttt{vimdiff} to compare git branches, and am using them in Overleaf right now!
+I have continued to use Visual Studio Code as my primary editor, as it has a \texttt{Remote - SSH} extension which allows near-seamless connection to a remote workspace. However, I found it limiting being unfamiliar with editing files directly in the terminal, as it is not convenient to have to create a VS Code workspace to edit every file. Therefore, I took some time to work through \textit{10-Minute Vim} to learn to use the editor \cite{vim}. I am starting to prefer using Vim keybindings, I use them in VS Code to edit text files, use \texttt{vimdiff} to compare git branches, and am using them in Overleaf right now!
 
 I have used a range different programming languages over the years, but since the second year of my undergraduate degree I have almost exclusively used Python. The code I have worked with this year has been a mixture of pure Python and Python interfaces atop FORTRAN or C++ implementation. In December, I took part in the \href{https://adventofcode.com}{Advent of Code} using C++, which I chose over FORTRAN as I am familiar with curly-brace syntax from Java. I think it will be a useful exercise to do it again this year but using FORTRAN \cite{advent}. 
 
@@ -695,7 +695,7 @@ After I have finished studying the dark energy equation of state, it is natural 
 %
 I will revisit this decision once the multi-modal issues with \texttt{PolyChord} have been resolved, and the primordial matter power spectrum and dark energy investigations are running.
 
-\subsubsection{\texttt{anesthetic.2} and {Pandas}}
+\subsubsection{\texttt{anesthetic.2} and \texttt{Pandas}}
 
 Dr.~Handley and Dr.~Hergt (a past member of the group) plan to develop \texttt{anesthetic.2} in the next few months. As well as performance improvements, they have updated the interface to more closely match that of \texttt{Pandas}, which \texttt{anesthetic} extends. I have found that some of the recent changes have had the side-effect of preventing some formatting parameters, such as the colour of a plot, to not be applied properly. I have corrected these issues by more closely following the structure of the overridden \texttt{Pandas} methods. However, this has led to me finding a bug in \texttt{Pandas} itself. Nested samples are weighted, and \texttt{Pandas} should be able to plot histograms and kernel density estimates out of the box. However, as discussed in section \ref{sec:de}, nested samples can contain NaN values, which \texttt{Pandas} will drop when plotting. However, it cannot handle both weights and NaNs at the same time. I am working on a pull request, which will take several weeks to get merged first into the master branch, then months into the release version. Until this happens, I have provided a workaround by overriding the same methods in \texttt{anesthetic}.
 
