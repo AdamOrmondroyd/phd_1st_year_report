@@ -37,7 +37,7 @@
 
 \begin{abstract}
 
-In cosmology, there are many cases where it is useful to reconstruct one-dimensional functions, such as the primordial matter power spectrum or the evolution of the dark energy equation of state parameter with redshift. The most general approach would be to fit a free-form function, where the nature of the function is itself determined by the data, not just its parameters. One such approach to this is to use a \textit{linf}: a linear spline between a variable number of nodes. This problem requires exploring a highly degenerate and multi-modal posterior distribution: nested sampling is a natural tool to investigate this.
+In cosmology, there are many cases where it is useful to reconstruct one-dimensional functions, such as the primordial matter power spectrum or the evolution of the dark energy equation of state parameter with redshift. The most general approach would be to fit a free-form function, where the nature of the function is itself determined by the data, not just its parameters. One such approach to this is to use a \textit{flex-knot}: a linear spline between a variable number of nodes. This problem requires exploring a highly degenerate and multi-modal posterior distribution: nested sampling is a natural tool to investigate this.
 
 For the first year of my PhD, I have focussed on learning how to use existing code: the cosmological Boltzmann code \texttt{CAMB}, the sampling and modelling framework \texttt{Cobaya}, and the nested sampler \texttt{PolyChord}.
 
@@ -53,7 +53,7 @@ The distribution version of \texttt{Cobaya} only allows the user to provide thei
 \newpage
 
 \section{Introduction}
-This report summarises the first year of my PhD. I have focussed primarily on familiarising myself with existing code, in particular the cosmology code \texttt{CAMB} (Code for Anisotropies in the Microwave Background) \cite{CAMB_1, CAMB_2}, the sampling and modelling framework \texttt{Cobaya} (\textbf{Co}de for \textbf{bay}esian \textbf{a}nalysis) \cite{Cobaya}, and the nested sampler \texttt{PolyChord} \cite{PolyChord_1, PolyChord_2}. The theme has been to use a \textit{linf}, a linear spline between either a fixed or variable number of nodes, to reconstruct a function from data.
+This report summarises the first year of my PhD. I have focussed primarily on familiarising myself with existing code, in particular the cosmology code \texttt{CAMB} (Code for Anisotropies in the Microwave Background) \cite{CAMB_1, CAMB_2}, the sampling and modelling framework \texttt{Cobaya} (\textbf{Co}de for \textbf{bay}esian \textbf{a}nalysis) \cite{Cobaya}, and the nested sampler \texttt{PolyChord} \cite{PolyChord_1, PolyChord_2}. The theme has been to use a \textit{flex-knot}, a linear spline between either a fixed or variable number of nodes, to reconstruct a function from data.
 
 I began by exploring toy examples with \texttt{PolyChord}, then proceeded to apply this to cosmology. I reconstructed the primordial matter power spectrum, using the interface which \texttt{Cobaya} provides. This revealed an issue with \texttt{PolyChord}, where the native K-nearest-neighbours clustering fails to identify separate clusters of parameters at higher resolutions. I have worked with Dr.~Handley to add an interface to \texttt{PolyChord} where the user can supply their own Python clustering, so that we will be able to experiment with different algorithms.
 
@@ -329,7 +329,7 @@ The ratio of the evidence ratio and the information ratio quantifies the mismatc
 
 \section{Toy Examples}
 \label{toyexamples}
-To develop my understanding of \texttt{PolyChord}, I repeated the work by S.~Hee et al.\ \cite{Sonke} This work uses linear splines as empirical models whose parameters are found using \texttt{PolyChord}, beginning with two toy datasets. One is $\sin\left({x/2\pi}\right)$ plus Gaussian noise, the other a ``line" wave, consisting of straight lines passing though $(1/4, 1)$ and $(3/4, -1)$ with period $1$. I added a third ``flat" case, replacing the line or sine with zero. For each case, I considered both errors in just the $y$--coordinate, and in both $x$ and $y$. A \textit{linf} can represent the line and flat cases exactly with $N=1$ and $N=4$ respectively.
+To develop my understanding of \texttt{PolyChord}, I repeated the work by S.~Hee et al.\ \cite{Sonke} This work uses linear splines as empirical models whose parameters are found using \texttt{PolyChord}, beginning with two toy datasets. One is $\sin\left({x/2\pi}\right)$ plus Gaussian noise, the other a ``line" wave, consisting of straight lines passing though $(1/4, 1)$ and $(3/4, -1)$ with period $1$. I added a third ``flat" case, replacing the line or sine with zero. For each case, I considered both errors in just the $y$--coordinate, and in both $x$ and $y$. A \textit{flex-knot} can represent the line and flat cases exactly with $N=1$ and $N=4$ respectively.
 
 To create each dataset $\left\{x_i, y_i\right\}$, 50 $x$--coordinates were drawn uniformly from $\left[0, 1\right]$, to which I applied one of the three functions to give the $y$--coordinate, and finally added homoskedastic Gaussian noise with $\sigma = 0.05$ in either just the $y$ or both directions. Any points taken out of $0\leq x < 1$ by the noise were deleted. My code is also vectorised to handle heteroskedastic errors.
 
@@ -346,16 +346,16 @@ For the prior, I took the nodes to be sorted-uniform in $x$ in $\left[0, 1\right
 This just leaves calculating the likelihood. This is straightforward for the $y$-errors case:
 
 \begin{equation}
-  L\left(\mathbf{\theta}\right) = \prod_{i=1}^{M}\frac{1}{\sqrt{2\pi\sigma_{y_i}^2}}\exp{\left[-\frac{\left(y_i-\textrm{linf}\left(x_i, \mathbf{\theta}\right)\right)^2}{2\sigma_{y_i}^2}\right]}\textrm,
+  L\left(\mathbf{\theta}\right) = \prod_{i=1}^{M}\frac{1}{\sqrt{2\pi\sigma_{y_i}^2}}\exp{\left[-\frac{\left(y_i-\textrm{flexknot}\left(x_i, \mathbf{\theta}\right)\right)^2}{2\sigma_{y_i}^2}\right]}\textrm,
 \end{equation}
 %
 with $M$ data points. Taking logs then reduces the product into a sum, which can be easily evaluated. Including the abscissa errors makes the evaluation more involved as one must marginalise over $X_i$, the possible ``true" value of the abscissa given the datum $x_i$: 
 
 \begin{equation}
-  L\left(\mathbf{\theta}\right)= \prod_{j=1}^{M}\int_{X_-}^{X_+}dX_j\frac{\exp{\left[-\frac{\left(x_j-X_j\right)^2}{2\sigma_{x_j}^2} -\frac{\left(y_j-\textrm{linf}\left(X_j\right)\right)^2}{2\sigma_{y_j}^2}\right]}}{2\pi\sigma_{x_j}\sigma_{y_j}\left(X_+-X_-\right)}\textrm,
+  L\left(\mathbf{\theta}\right)= \prod_{j=1}^{M}\int_{X_-}^{X_+}dX_j\frac{\exp{\left[-\frac{\left(x_j-X_j\right)^2}{2\sigma_{x_j}^2} -\frac{\left(y_j-\textrm{flexknot}\left(X_j\right)\right)^2}{2\sigma_{y_j}^2}\right]}}{2\pi\sigma_{x_j}\sigma_{y_j}\left(X_+-X_-\right)}\textrm,
 \end{equation}
 %
-where $X_-$ and $X_+$ are the limits of $x$, 0 and 1 here. I split this integral by summing each straight section of the \textit{linf}, which can be each be reparameterised as straight lines in the usual way:
+where $X_-$ and $X_+$ are the limits of $x$, 0 and 1 here. I split this integral by summing each straight section of the \textit{flexknot}, which can be each be reparameterised as straight lines in the usual way:
 
 \begin{equation}
 \begin{aligned}
@@ -365,7 +365,7 @@ where $X_-$ and $X_+$ are the limits of $x$, 0 and 1 here. I split this integral
 \end{aligned}
 \end{equation}
 %
-where $\theta_{x_k}$ and $\theta_{y_k}$ are the $x$ and $y$ coordinates of the $k^\textrm{th}$ of $N$ nodes in the \textit{linf}. By completing the square, and scaling the integration variable, the integrals can be rewritten as the difference of error functions:
+where $\theta_{x_k}$ and $\theta_{y_k}$ are the $x$ and $y$ coordinates of the $k^\textrm{th}$ of $N$ nodes in the \textit{flexknot}. By completing the square, and scaling the integration variable, the integrals can be rewritten as the difference of error functions:
 
 \begin{equation}
 \begin{aligned}
@@ -405,16 +405,16 @@ Like how multiplication becomes addition in log-scale, additions become $\textrm
 \begin{figure}[!hb]
   \centering
   \includegraphics[width=14cm]{toysineN.eps}
-  \caption{Histogram of posterior samples for adaptive \textit{linf}, for sine, line and flat cases, using either \texttt{PolyChord} or \texttt{MultiNest}. Left: $y$ errors only. Right: both $x$ and $y$ errors.}
+  \caption{Histogram of posterior samples for adaptive \textit{flexknot}, for sine, line and flat cases, using either \texttt{PolyChord} or \texttt{MultiNest}. Left: $y$ errors only. Right: both $x$ and $y$ errors.}
   \label{fig:toysineN}
 \end{figure}
 
-The posterior distribution of $N$ for \texttt{AdaptiveLinf} are shown in figure \ref{fig:toysineN}, and their respective functional posterior plots in figure \ref{fig:toysineadaptive}. As expected, the flat case favours $N=1$. However, the line case doesn't favour $N=4$, instead preferring five or six nodes without and with $x$ errors respectively. Substituting the nested sampler \texttt{MultiNest} recovers $N=4$ at least in the $y$ errors only case; the posterior of $N$ is also shown in figure \ref{fig:toysineN}. However, \texttt{MultiNest} also favours 6 nodes for the sine wave, when one would expect the maximum number of nodes to be favoured. I am investigating this further. 
+The posterior distribution of $N$ for \texttt{AdaptiveFlexKnot} are shown in figure \ref{fig:toysineN}, and their respective functional posterior plots in figure \ref{fig:toysineadaptive}. As expected, the flat case favours $N=1$. However, the line case doesn't favour $N=4$, instead preferring five or six nodes without and with $x$ errors respectively. Substituting the nested sampler \texttt{MultiNest} recovers $N=4$ at least in the $y$ errors only case; the posterior of $N$ is also shown in figure \ref{fig:toysineN}. However, \texttt{MultiNest} also favours 6 nodes for the sine wave, when one would expect the maximum number of nodes to be favoured. I am investigating this further. 
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=16cm]{toysineadaptive.eps}
-  \caption{Functional posterior contour plots of adaptive \textit{linf} posterior samples for sine, line and flat cases using \texttt{PolyChord}. Left: $y$ errors only. Right: both $x$ and $y$ errors. Note the different scale for the line case.}
+  \caption{Functional posterior contour plots of adaptive \textit{flexknot} posterior samples for sine, line and flat cases using \texttt{PolyChord}. Left: $y$ errors only. Right: both $x$ and $y$ errors. Note the different scale for the line case.}
   \label{fig:toysineadaptive}
 \end{figure}
 
@@ -432,7 +432,7 @@ The posterior distribution of $N$ for \texttt{AdaptiveLinf} are shown in figure 
 \texttt{CAMB} is written in object-oriented FORTRAN90 and interfaced via Python, which allows \texttt{CAMB} to be used interactively with the speed of compiled code. It can be parallelised using \texttt{OpenMP} (Open Multi-Processing), with almost linear scaling up to 16 processes \cite{camb_mp}. 
 
 \subsection{Primordial matter power spectrum}
-To check that I am using \texttt{Cobaya} and \texttt{CAMB} correctly, I repeated the work in \cite{Handley2019}, where the primordial matter power spectrum is reconstructed using a linear spline. Therefore, I created my \textit{linf} package, as I can reuse it here.
+To check that I am using \texttt{Cobaya} and \texttt{CAMB} correctly, I repeated the work in \cite{Handley2019}, where the primordial matter power spectrum is reconstructed using a linear spline. Therefore, I created my \textit{FlexKnot} package, as I can reuse it here.
 
 The primordial matter power spectrum has the form:
 
@@ -446,13 +446,13 @@ where $n_s$ is the scalar spectral index, and $A_s$ is the comoving curvature po
   \ln{\mathcal P_\mathcal R} = \ln{A_s} + \left(n_s - 1\right) \ln{\frac{k}{k_\textrm{pivot}}} = \ln{A_s} + \left(n_s - 1\right) \log_{10}{\frac{k}{k_\textrm{pivot}}} \ln{10}\textrm.
 \end{equation}
 %
-$\mathcal P_\mathcal R(k)$ is of $\mathcal{O}\left(10^{-10}\right)$, but it is good practice in computation to work with parameters of $\mathcal{O}\left(1\right)$. Therefore, $\ln{\left(10^{10}\mathcal P_i\right)}$  was used as the $y$--parameter of the \textit{linf}. My code uses this scaling implicitly, i.e., \texttt{lnPi} refers to $\ln{\left(10^{10}\mathcal P_i\right)}$.
+$\mathcal P_\mathcal R(k)$ is of $\mathcal{O}\left(10^{-10}\right)$, but it is good practice in computation to work with parameters of $\mathcal{O}\left(1\right)$. Therefore, $\ln{\left(10^{10}\mathcal P_i\right)}$  was used as the $y$--parameter of the \textit{flexknot}. My code uses this scaling implicitly, i.e., \texttt{lnPi} refers to $\ln{\left(10^{10}\mathcal P_i\right)}$.
 
 \begin{equation}
-  \mathcal P_\mathcal R\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}\mathcal P_i\right)}\right\}\right) = 10^{-10} \exp{\left[{\textrm{linf}\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}\mathcal P_i\right)}\right\}\right)}\right]}\textrm.
+  \mathcal P_\mathcal R\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}\mathcal P_i\right)}\right\}\right) = 10^{-10} \exp{\left[{\textrm{flexknot}\left(\left\{\log_{10}{k_i}, \ln{\left(10^{10}\mathcal P_i\right)}\right\}\right)}\right]}\textrm.
 \end{equation}
 %
-Unlike the toy example where I was working with \texttt{PolyChord} directly, \texttt{Cobaya} understands each of the model parameters separately. Also, what \texttt{PolyChord} calls a ``prior" is the inverse cumulative distribution function of the prior, while \texttt{Cobaya} understands priors more literally. Applying this inverse to points uniformly distributed in the unit hypercube $[0, 1]^D$ returns points distributed according the the prior. Therefore, the interleaved uniform/sorted-uniform prior in my \texttt{linf} package cannot be used here. Instead, each of the $\log_{10}{k_i}$ parameters is given its own uniform prior, with the sorted constraint implemented in a separate prior, e.g:
+Unlike the toy example where I was working with \texttt{PolyChord} directly, \texttt{Cobaya} understands each of the model parameters separately. Also, what \texttt{PolyChord} calls a ``prior" is the inverse cumulative distribution function of the prior, while \texttt{Cobaya} understands priors more literally. Applying this inverse to points uniformly distributed in the unit hypercube $[0, 1]^D$ returns points distributed according the the prior. Therefore, the interleaved uniform/sorted-uniform prior in my \texttt{flexknot} package cannot be used here. Instead, each of the $\log_{10}{k_i}$ parameters is given its own uniform prior, with the sorted constraint implemented in a separate prior, e.g:
 \begin{verbatim}
   lambda lgk1, lgk2, lgk3, lgk4, lgk5, lgk6, lgk7: np.log(lgk1 < lgk2 < lgk3 < lgk4 
     < lgk5 < lgk6 < lgk7)
@@ -463,12 +463,12 @@ The likelihoods used in the toy examples of section \ref{toyexamples} are simila
 
 \texttt{Cobaya} has a built-in option for the user to provide their own $\mathcal P_\mathcal R(k)$. This is done by specifying \texttt{external\_primordial\_pk:} \texttt{True} in the \texttt{CAMB} block and providing the path to a class which will provide $\mathcal P_\mathcal R(k)$. This class must inherit from \texttt{cobaya.Theory}, needs a \texttt{calculate} method which adds the $k$ and $\mathcal P_\mathcal R(k)$ values to the state dictionary, and a \texttt{get\_primordial\_scalar\_pk} method which returns this part of the state. The class variable \texttt{params} specifies the parameters required for the calculation. \texttt{CAMB} then internally uses a cubic spline between these values.
 
-I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using inheritance. The \texttt{LinfPk} inherits from \texttt{Theory} and defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods. \texttt{calculate} depends on \texttt{self.linf}, which is specified in its child classes \texttt{VanillaPk} and \texttt{AdaptivePk}. \texttt{AdaptivePk} is complete as it specifies its own \texttt{params}, while \texttt{Vanilla[1-9]} specify them for  \texttt{VanillaPk} for the nine vanilla cases. A class diagram is shown in figure \ref{fig:PkUMLDiagram}. The functional posteriors from the vanilla cases are shown in figure \ref{fig:Pk_vanilla_100}, using 100 \texttt{PolyChord} live points. Their respective evidences are shown in figure \ref{fig:PklogZ}, along with the corresponding values for the adaptive case, split by $N$. The two sets are clearly different, particularly the most unlikely cases of $N=1$ and $N=9$. For the adaptive case, these each have an effective sample size of approximately one. This is because \texttt{PolyChord} has successfully identified them as low evidence modes and has saved computation time by not sampling them in more detail.
+I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using inheritance. The \texttt{FlexPk} inherits from \texttt{Theory} and defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods. \texttt{calculate} depends on \texttt{self.flexknot}, which is specified in its child classes \texttt{VanillaPk} and \texttt{AdaptivePk}. \texttt{AdaptivePk} is complete as it specifies its own \texttt{params}, while \texttt{Vanilla[1-9]} specify them for  \texttt{VanillaPk} for the nine vanilla cases. A class diagram is shown in figure \ref{fig:PkUMLDiagram}. The functional posteriors from the vanilla cases are shown in figure \ref{fig:Pk_vanilla_100}, using 100 \texttt{PolyChord} live points. Their respective evidences are shown in figure \ref{fig:PklogZ}, along with the corresponding values for the adaptive case, split by $N$. The two sets are clearly different, particularly the most unlikely cases of $N=1$ and $N=9$. For the adaptive case, these each have an effective sample size of approximately one. This is because \texttt{PolyChord} has successfully identified them as low evidence modes and has saved computation time by not sampling them in more detail.
 
 \begin{figure}
   \centering
   \includegraphics[width=16cm]{Pk_linf.pdf}
-  \caption{Class diagram for the Theory subclasses used to reconstruct the primordial matter power spectrum with a linear spline. \texttt{LinfPk} defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods, then the constructors for \texttt{VanillaPk} and \texttt{AdaptivePk} specifies which type of \texttt{linf} to use. \texttt{AdaptivePk} also specifies its \texttt{params} class attribute, while for the nine vanilla cases this is specified by the children of \texttt{VanillaPk}.}
+  \caption{Class diagram for the Theory subclasses used to reconstruct the primordial matter power spectrum with a linear spline. \texttt{FlexKnotPk} defines the \texttt{calculate} and \texttt{get\_primordial\_scalar\_pk} methods, then the constructors for \texttt{VanillaPk} and \texttt{AdaptivePk} specifies which type of \texttt{flexknot} to use. \texttt{AdaptivePk} also specifies its \texttt{params} class attribute, while for the nine vanilla cases this is specified by the children of \texttt{VanillaPk}.}
   \label{fig:PkUMLDiagram}
 \end{figure}
 
@@ -477,7 +477,7 @@ I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using
 \begin{figure}[H]
   \centering
   \includegraphics[width=16cm]{vanilla100.eps}
-  \caption{Functional posterior contour plots for the \textit{linf} reconstruction of the primordial matter power spectrum, with fixed numbers of nodes from 1 to 9. 100 live points was used for each of these runs.}
+  \caption{Functional posterior contour plots for the \textit{flexknot} reconstruction of the primordial matter power spectrum, with fixed numbers of nodes from 1 to 9. 100 live points was used for each of these runs.}
   \label{fig:Pk_vanilla_100}
 \end{figure}
 
@@ -493,9 +493,9 @@ I expressed my ten different \texttt{Theory}s (nine vanilla plus adaptive) using
 \subsection{Dark energy}
 \label{sec:de}
 
-All the exercise with toy sine models and the primordial matter power spectrum was building up to investigate the dark energy equation of state. The equation of state of a perfect fluid is characterised the ratio of its pressure to its density: $w = p/\rho$. The goal is to perform a similar spline ``\textit{linf}" reconstruction to $\mathcal P_\mathcal R(k)$ with $w(a)$.
+All the exercise with toy sine models and the primordial matter power spectrum was building up to investigate the dark energy equation of state. The equation of state of a perfect fluid is characterised the ratio of its pressure to its density: $w = p/\rho$. The goal is to perform a similar spline ``\textit{flexknot}" reconstruction to $\mathcal P_\mathcal R(k)$ with $w(a)$.
 
-Since dark energy exists as an explanation for the cosmological constant, i.e., a fluid with $w=-1$, this needs to be reflected in the prior and \texttt{AdaptiveLinf}. Therefore, I modified my \texttt{AdaptiveLinf} so that for $N=0$ (or more accurately, $0\le N <1$) it is constant at -1. This is more appropriate than the cosmological constant being only the $w_{N_\textrm{max}-1} = 1$, $1\le N<2$ element of the entire prior volume.
+Since dark energy exists as an explanation for the cosmological constant, i.e., a fluid with $w=-1$, this needs to be reflected in the prior and \texttt{AdaptiveFlexKnot}. Therefore, I modified my \texttt{AdaptiveFlexKnot} so that for $N=0$ (or more accurately, $0\le N <1$) it is constant at -1. This is more appropriate than the cosmological constant being only the $w_{N_\textrm{max}-1} = 1$, $1\le N<2$ element of the entire prior volume.
 
 The primordial matter power spectrum is unique in \texttt{Cobaya} in having the \texttt{external\_primordial\_pk} option. The primordial power spectrum is separate from the rest of the parameters passed to \texttt{CAMB}, which are either used to compute the transfer functions or specify non-linear behaviour. The transfer functions are then applied to the power spectrum to compute the spectra we see today. This means that the primordial power spectrum can be changed without needing to recompute the transfer functions, so can be sampled independently.
 
@@ -505,9 +505,9 @@ Changing dark energy is less straightforward as \texttt{Cobaya} only supports th
 
 I chose a prior of $a_i$ sorted-uniform in $[0.1, 1]$, and $w_i$ uniform in $[-2, -0.01]$. As this range extends below $-1$, termed ``Phantom energy", this requires using the Parameterised Post-Friedmann dark energy, as a model with a single scalar field cannot cross $w=-1$ \cite{PPF}. 
 
-The challenging part here was to understand the correct place in the \texttt{Cobaya} code to add this change. As $w(a)$ needs to be set with the other \texttt{CAMB} transfer function parameters, I could not copy the existing code for $\mathcal P_\mathcal R(k)$. Instead, I ran \texttt{Cobaya} in debug mode with $w=\textrm{const.}$ to find where it provides this value to \texttt{CAMB}. Once I found it (\texttt{cobaya.theories.camb.camb.CAMB.set()}), I appended a check for \texttt{external\_wa}, and if so then pass the values of $w$ and $a$ to the instance of \texttt{CAMBparams}, the object which stores the parameters for \texttt{CAMB}. This didn't work, which manifested itself as either segmentation faults or getting very different results with a flat \textit{linf} ($N=0$) when compared to varying $w$ directly. This is because the order in which parameters are provided to \texttt{CAMB} is important. Dark energy should be set \textbf{first}, as when \texttt{CAMB} is provided with \texttt{theta\_MC\_100} ($100 \times$ the ratio of the sound horizon to the angular diameter distance), it then uses dark energy to calculate $H_0$. It is more efficient to sample \texttt{theta\_MC\_100} than $H_0$ as it is less correlated with other parameters \cite{CosmoMCReadMe}. Therefore, I changed \texttt{set()} so it creates a fresh instance of \texttt{CAMBparams}, sets the table of $w$ and $a$, then sets the rest of the cosmology so that $H_0$ is computed correctly.
+The challenging part here was to understand the correct place in the \texttt{Cobaya} code to add this change. As $w(a)$ needs to be set with the other \texttt{CAMB} transfer function parameters, I could not copy the existing code for $\mathcal P_\mathcal R(k)$. Instead, I ran \texttt{Cobaya} in debug mode with $w=\textrm{const.}$ to find where it provides this value to \texttt{CAMB}. Once I found it (\texttt{cobaya.theories.camb.camb.CAMB.set()}), I appended a check for \texttt{external\_wa}, and if so then pass the values of $w$ and $a$ to the instance of \texttt{CAMBparams}, the object which stores the parameters for \texttt{CAMB}. This didn't work, which manifested itself as either segmentation faults or getting very different results with a flat \textit{flexknot} ($N=0$) when compared to varying $w$ directly. This is because the order in which parameters are provided to \texttt{CAMB} is important. Dark energy should be set \textbf{first}, as when \texttt{CAMB} is provided with \texttt{theta\_MC\_100} ($100 \times$ the ratio of the sound horizon to the angular diameter distance), it then uses dark energy to calculate $H_0$. It is more efficient to sample \texttt{theta\_MC\_100} than $H_0$ as it is less correlated with other parameters \cite{CosmoMCReadMe}. Therefore, I changed \texttt{set()} so it creates a fresh instance of \texttt{CAMBparams}, sets the table of $w$ and $a$, then sets the rest of the cosmology so that $H_0$ is computed correctly.
 
-To avoid any issues arising from using the internal cubic spline (which the \texttt{CAMB} documentation notes is quite slow \cite{CAMBdocs}), I created several branches of \texttt{Cobaya} in parallel. \textit{external\_wa} matches the description above, \textit{flat\_wa} takes the last value from the \textit{linf} and sets $w$ directly, and \textit{linear\_wa} takes the first and last values from the \textit{linf}, uses these to calculate $w$ and $w_a$, and sets those. I compared the \textit{flat\_wa} branch against the Planck 2018 MCMC chains, and \textit{linear\_wa} against an unmodified \texttt{Cobaya} allowing $w_a$ to vary, with present day $w=-1$. Only once I was convinced these were consistent did I then use the full \textit{external\_wa} version.
+To avoid any issues arising from using the internal cubic spline (which the \texttt{CAMB} documentation notes is quite slow \cite{CAMBdocs}), I created several branches of \texttt{Cobaya} in parallel. \textit{external\_wa} matches the description above, \textit{flat\_wa} takes the last value from the \textit{flexknot} and sets $w$ directly, and \textit{linear\_wa} takes the first and last values from the \textit{flexknot}, uses these to calculate $w$ and $w_a$, and sets those. I compared the \textit{flat\_wa} branch against the Planck 2018 MCMC chains, and \textit{linear\_wa} against an unmodified \texttt{Cobaya} allowing $w_a$ to vary, with present day $w=-1$. Only once I was convinced these were consistent did I then use the full \textit{external\_wa} version.
 
 At the start of each run, \texttt{Cobaya} times each of the theories, and works out the appropriate oversampling factor for each of them. I have been manually specifying in the input yaml file for \texttt{Cobaya} that the dark energy parameters should be sampled with the rest of the cosmological parameters, rather than separately, as this roughly halves the runtime. I would like to automate this, as doing this manually requires the user to also specify the oversampling factors.
 
@@ -520,7 +520,7 @@ I have included some provisional posterior plots in figure \ref{fig:externalwa},
 \begin{figure}[H]
   \centering
   \includegraphics[width=16cm]{adaptivew.eps}
-  \caption{Posterior plots using an \texttt{AdaptiveLinf} as a model for the dark energy equation of state parameter, with different values of $N_\textrm{max}$. These use the Planck 2018 likelihoods only. For $N_\textrm{max}\le 3$, $w=-1$ is still a dominant mode, as $N_\textrm{max}$ increases further, values around -1.7 to -1.5 begin to appear. This is in line with $w=-1.57_{-0.40}^{+0.50}$ calculated by Planck 2018 \cite{planck_6}.}
+  \caption{Posterior plots using an \texttt{AdaptiveFlexKnot} as a model for the dark energy equation of state parameter, with different values of $N_\textrm{max}$. These use the Planck 2018 likelihoods only. For $N_\textrm{max}\le 3$, $w=-1$ is still a dominant mode, as $N_\textrm{max}$ increases further, values around -1.7 to -1.5 begin to appear. This is in line with $w=-1.57_{-0.40}^{+0.50}$ calculated by Planck 2018 \cite{planck_6}.}
   \label{fig:externalwa}
 \end{figure}
 
@@ -529,14 +529,14 @@ I have included some provisional posterior plots in figure \ref{fig:externalwa},
 \begin{figure}[H]
   \centering
   \includegraphics[width=13cm]{darkN.eps}
-  \caption{Histograms of posterior samples of the number of nodes of an \texttt{AdaptiveLinf} used to reconstruct the dark energy equation of state parameter. $N=0$ corresponds to $w=-1$, the cosmological constant. The first five cases use different maximum $N$, and do not favour the cosmological constant. Adding in Baryonic Acoustic Oscillations and IA supernovae data recovers the cosmological constant in the sixth plot.}
+  \caption{Histograms of posterior samples of the number of nodes of an \texttt{AdaptiveFlexKnot} used to reconstruct the dark energy equation of state parameter. $N=0$ corresponds to $w=-1$, the cosmological constant. The first five cases use different maximum $N$, and do not favour the cosmological constant. Adding in Baryonic Acoustic Oscillations and IA supernovae data recovers the cosmological constant in the sixth plot.}
   \label{fig:darkN}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=9cm]{darkNbao.eps}
-  \caption{Posterior plots using an \texttt{AdaptiveLinf} as a model for the dark energy equation of state parameter, using the Baryonic Acoustic Oscillations and IA supernovae data in addition to the Planck likelihoods. This recovers the cosmological constant $w=-1$.}
+  \caption{Posterior plots using an \texttt{AdaptiveFlexKnot} as a model for the dark energy equation of state parameter, using the Baryonic Acoustic Oscillations and IA supernovae data in addition to the Planck likelihoods. This recovers the cosmological constant $w=-1$.}
   \label{fig:darkNbao}
 \end{figure}
 
@@ -545,14 +545,14 @@ I have included some provisional posterior plots in figure \ref{fig:externalwa},
 \section{PolyChord Revisited: Clustering}
 \label{sec:polychord_revisited}
 
-To produce results more quickly I used 100 \texttt{PolyChord} live points, intending to increase this to 25 $\times$ number of dimensions $= 25 N_\textrm{dims} \approx800$ for the final run to put in this report, as advised \cite{PolyChord_1, PolyChord_2, Sonke}. However, for the three-node case this causes a problem. $\mathcal P_\mathcal R(k)$ is most tightly constrained to a linear slope for $k = 10^{-2.5} - 10^{-0.8}$, and much less so outside of this. Two high-likelihood modes are expected, one with a node to the left of this range, and one to the right. The posterior plot of the \textit{linf} should therefore consist of a narrow centre section, with the less constrained parts fanning out at either side from each of the modes. This is what is seen with 100 live points. However, when the resolution is turned up to $25N\textrm{dims}=725$, only the left-hand mode is present. We believe this to be because the greater density of live points means the parameter space gap between the two modes is bridged, so \texttt{PolyChord} fails to identify them as two separate clusters, which is necessary for it to function properly. The posterior samples for the internal node for both resolutions and their respective functional posteriors are shown in figure \ref{fig:N3}
+To produce results more quickly I used 100 \texttt{PolyChord} live points, intending to increase this to 25 $\times$ number of dimensions $= 25 N_\textrm{dims} \approx800$ for the final run to put in this report, as advised \cite{PolyChord_1, PolyChord_2, Sonke}. However, for the three-node case this causes a problem. $\mathcal P_\mathcal R(k)$ is most tightly constrained to a linear slope for $k = 10^{-2.5} - 10^{-0.8}$, and much less so outside of this. Two high-likelihood modes are expected, one with a node to the left of this range, and one to the right. The posterior plot of the \textit{flexknot} should therefore consist of a narrow centre section, with the less constrained parts fanning out at either side from each of the modes. This is what is seen with 100 live points. However, when the resolution is turned up to $25N\textrm{dims}=725$, only the left-hand mode is present. We believe this to be because the greater density of live points means the parameter space gap between the two modes is bridged, so \texttt{PolyChord} fails to identify them as two separate clusters, which is necessary for it to function properly. The posterior samples for the internal node for both resolutions and their respective functional posteriors are shown in figure \ref{fig:N3}
 
 Since the original paper \cite{Handley2019}, improvements have been made to \texttt{CAMB}, specifically its ability to account for the non-linear lensing effects due to matter between the surface of last scattering and Earth. However, there is an issue with the \texttt{Cobaya} documentation with respect to how to turn off these non-linear effects, so I have been unable to test whether removing them recovers the right-hand mode. This is apparent as turning this off should increase \texttt{CAMB}'s speed and therefore its oversampling factor, which has not happened.
 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=15cm]{N3comparison.eps}
-  \caption{Left: posterior samples of the internal node of three for the \textit{linf} primordial matter power spectrum. With 100 live points, there are two distinct modes, which \texttt{PolyChord} has identified as two separate clusters. Increasing the resolution to $25 \times N_\textrm{dims}$ causes the mode with the internal node at high $k$ to be lost. Right: posterior of the \textit{linf} function for the primordial matter power spectrum. The loss of the mode with the internal node at high $k$ means the distribution doesn't fan out on the right.}
+  \caption{Left: posterior samples of the internal node of three for the \textit{flexknot} primordial matter power spectrum. With 100 live points, there are two distinct modes, which \texttt{PolyChord} has identified as two separate clusters. Increasing the resolution to $25 \times N_\textrm{dims}$ causes the mode with the internal node at high $k$ to be lost. Right: posterior of the \textit{flexknot} function for the primordial matter power spectrum. The loss of the mode with the internal node at high $k$ means the distribution doesn't fan out on the right.}
   \label{fig:N3}
 \end{figure}
 
@@ -665,7 +665,7 @@ As a SL3 tier user, I can submit jobs on up to 8 nodes. Cascade Lake nodes have 
 
 Over the course of this year, I have become familiar with \texttt{PolyChord}, \texttt{Cobaya} and \texttt{CAMB}, both in using and modifying them. I have learned to use the supercomputer CSD3, both in terms of using Linux over SSH, and submitting large jobs to the compute nodes. 
 
-I have found \texttt{PolyChord} to be a suitable way of fitting a \textit{linf}, a linear spline between either a fixed or variable number of nodes. However, when the number of live points (effective resolution) is increased to its recommended setting, it is unreliable in correctly identifying clusters. This became apparent when using a \textit{linf} to reconstruct the primordial matter power spectrum. I am working on adding a custom clustering argument to \texttt{PolyChord}, where the user can supply their own clustering algorithm.
+I have found \texttt{PolyChord} to be a suitable way of fitting a \textit{flexknot}, a linear spline between either a fixed or variable number of nodes. However, when the number of live points (effective resolution) is increased to its recommended setting, it is unreliable in correctly identifying clusters. This became apparent when using a \textit{flexknot} to reconstruct the primordial matter power spectrum. I am working on adding a custom clustering argument to \texttt{PolyChord}, where the user can supply their own clustering algorithm.
 
 The above was all intended as practice for investigating the dark energy equation of state parameter $w$. I have modified \texttt{Cobaya} to include an \texttt{external\_wa} option, analogous to \texttt{external\_primordial\_pk}, where the user supplies their own \texttt{cobaya.Theory} subclass to provide a table of $k$, $\mathcal P_\mathcal R(k)$ or $a$, $w(a)$ values. This change is almost complete but understanding the clustering issue with \texttt{PolyChord} is vital before any definitive conclusions can be made about dark energy.
 
@@ -705,7 +705,7 @@ I will revisit this decision once the multi-modal issues with \texttt{PolyChord}
 Dr.~Handley and Dr.~Hergt (a past member of the group) plan to develop \texttt{anesthetic.2} in the next few months. As well as performance improvements, they have updated the interface to more closely match that of \texttt{Pandas}, which \texttt{anesthetic} extends. I have found that some of the recent changes have had the side-effect of preventing some formatting parameters, such as the colour of a plot, to not be applied properly. I have corrected these issues by more closely following the structure of the overridden \texttt{Pandas} methods. However, this has led to me finding a bug in \texttt{Pandas} itself. Nested samples are weighted, and \texttt{Pandas} should be able to plot histograms and kernel density estimates out of the box. However, as discussed in section \ref{sec:de}, nested samples can contain NaN values, which \texttt{Pandas} will drop when plotting. However, it cannot handle both weights and NaNs at the same time. I am working on a pull request, which will take several weeks to get merged first into the master branch, then months into the release version. Until this happens, I have provided a workaround by overriding the same methods in \texttt{anesthetic}.
 
 By adding a new component with a dynamic equation of state to my analysis, I will be able to assess whether there is evidence to support a new component, 
-A \textit{linf} can model both the periods before and after the transitions and provide insight into the nature of the transition itself. As matter-radiation equality occurs at a redshift of around 3400 \cite{planck_6}, a \textit{linf} in $w_\textrm{dark radiation}(\log{a})$ would be more appropriate. 
+A \textit{flexknot} can model both the periods before and after the transitions and provide insight into the nature of the transition itself. As matter-radiation equality occurs at a redshift of around 3400 \cite{planck_6}, a \textit{flexknot} in $w_\textrm{dark radiation}(\log{a})$ would be more appropriate. 
 
 
 As a part of this work, I would similarly like to look further back with the dark energy equation of state. Once I have successfully reproduced S.~Hee's results \cite{Sonke}, I will re-parameterise $w$ as $w(\log{a})$.
