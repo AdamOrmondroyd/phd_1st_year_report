@@ -62,9 +62,13 @@ The primordial matter power spectrum was practice for reconstructing the dark en
 \section{Cosmological Context}
 \label{sec:context}
 \subsection{Introduction to cosmology}
-Symmetries are crucial to understanding and describing our universe. On small scales matter is distributed in an irregular way, clustered into galaxies, planets, people. Looking beyond the Milky Way, beyond the Local Group, beyond the Virgo constellation, the matter distribution looks the same in all directions: the universe is \textit{isotropic}. The near-constant temperature of the cosmic microwave background (CMB) is very strong evidence for this. If we follow the philosophy of the Coperinical Revolution then the universe must also have no preferred centre, therefore, \textit{isotropy} implies \textit{homogeneity}. This forms the basis for the \textit{cosmological principle}: at any time, the universe looks the same in all directions at any position, and all spatial positions are equivalent.
+Symmetries are crucial to understanding and describing our universe. On small scales matter is distributed in an irregular way, clustered into galaxies, planets, people. Looking beyond the Milky Way, beyond the Local Group, beyond the Virgo constellation, the matter distribution looks the same in all directions: the universe is \textit{isotropic}. The near-constant temperature of the cosmic microwave background (CMB) is very strong evidence for this. If we follow the philosophy of the Coperinican Revolution \cite{copernicus} then the universe must also have no preferred centre, therefore, \textit{isotropy} implies \textit{homogeneity}. This forms the basis for the \textit{cosmological principle}: at any time, the universe looks the same in all directions at any position, and all spatial positions are equivalent \cite{hob-efs-las-2006}.
 
-Einstein's original field equations introduced the cosmological constant $\Lambda$ as a means to construct a static model of the universe. Subsequently, it was discovered that the universe not just expanding, but \textit{accelerating} --- in typical Einstein fashion, his ``biggest blunder'' provides a description for this! However, we lack a theoretical understanding of this vacuum energy.
+Einstein's original field equations introduced the cosmological constant $\Lambda$ to construct a static model of the universe \cite{Einstein:1905ve}. Subsequently, it was discovered that the universe not just expanding, but \textit{accelerating} --- in typical Einstein fashion, his ``biggest blunder'' provides a description for this! Understanding the cosmological constant is far from complete, for example, summing the zero-point energies of all known quantum-mechanical fields arrives at a result $10^{120}$ times larger than the vacuum energy we observe. Regardless of the theoretical nature of ``dark energy'', its effect is clear in many observations, from the recession of type-Ia supernovae to the black-body CMB spectrum \cite{hob-efs-las-2006}.
+
+Galactic rotation curve observations promote the requirement for another, slightly less mysterious, component for cosmology: dark matter. The orbital rotation speeds of the outer members of galaxies cannot be explained with the matter we can see; clearly, something else beyond the standard model is at play \cite{existence-nature-dm}. The need for an additional matter component can be seen through gravitational lensing, the motion of galaxies within clusters, and again in the CMB \cite{Bertone-2018}. 
+
+Cold, warm, and hot dark matter refer to the speed of dark matter candidates before they were slowed by cosmic expansion, defining the \textit{free streaming length}. This sets a minimal scale for structure formation, as fluctuations smaller than this will be washed out \cite{free-streaming}. Cold dark matter (CDM) will form galaxies first, which will then cluster. Hot dark matter instead suggests that large aggregations form first, which then fragment \cite{silk2000big}. Hot dark matter is excluded by high-redshift galaxy observations \cite{Bertone_2005}, and here we arrive at the cosmological status-quo: $\Lambda$CDM.
 
 \subsection{Cosmological tensions}
 \label{ssec:tension}
@@ -256,7 +260,6 @@ It is not usually possible to set precise values of $t$, but setting them statis
 
 These methods are equivalent, but (b) does not use the prior mass, so the sorting step is not needed.
 
-\newpage
 \subsection{Nested sampling algorithms}
 
 Several variants around Skilling's original nested sampling algorithm exist. In general, the posterior will be multi-modal, and is dealt with in different ways in different algorithm. 
@@ -402,7 +405,7 @@ Since the elements of the first sum are all the same, it can just be multiplied 
 
 Like how multiplication becomes addition in log-scale, additions become $\textrm{logsumexp}$, which is frequently encountered when dealing with log probabilities. Typical cosmological $\log Z$ values are $\mathcal{O}\left(-1000\right)$, so their exponentials are much smaller than e.g., the smallest representable number in IEEE double precision, $\approx4.95\times10^{-324}$, so just combining the $\log$, $\textrm{sum}$ and $\exp$ functions in the appropriate way will lead to overflow errors \cite{IEEE}. Assuming the $x_i$ to be of similar magnitude, by writing $\textrm{logsumexp}$ in the way shown in equation \ref{eq:logsumexp} pulling a factor of $e^{x_\textrm{max}}$ from the sum will make the exponentials representable, and therefore maintain better precision \cite{logsumexp}.
 
-\begin{figure}[!hb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=14cm]{toysineN.eps}
   \caption{Histogram of posterior samples for adaptive \textit{flexknot}, for sine, line and flat cases, using either \texttt{PolyChord} or \texttt{MultiNest}. Left: $y$ errors only. Right: both $x$ and $y$ errors.}
@@ -411,12 +414,21 @@ Like how multiplication becomes addition in log-scale, additions become $\textrm
 
 The posterior distribution of $N$ for \texttt{AdaptiveFlexKnot} are shown in figure \ref{fig:toysineN}, and their respective functional posterior plots in figure \ref{fig:toysineadaptive}. As expected, the flat case favours $N=1$. However, the line case doesn't favour $N=4$, instead preferring five or six nodes without and with $x$ errors respectively. Substituting the nested sampler \texttt{MultiNest} recovers $N=4$ at least in the $y$ errors only case; the posterior of $N$ is also shown in figure \ref{fig:toysineN}. However, \texttt{MultiNest} also favours 6 nodes for the sine wave, when one would expect the maximum number of nodes to be favoured. I am investigating this further. 
 
+\newpage
+
+\newpage
+
+
+\newpage
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=16cm]{toysineadaptive.eps}
   \caption{Functional posterior contour plots of adaptive \textit{flexknot} posterior samples for sine, line and flat cases using \texttt{PolyChord}. Left: $y$ errors only. Right: both $x$ and $y$ errors. Note the different scale for the line case.}
   \label{fig:toysineadaptive}
 \end{figure}
+\subsection{Summary}
+Symmetries are crucial to understanding and describing our universe. onedriveOn small scales, matter is distributed in an irregular way, clustered into galaxies, planets, people. Looking beyond the Milky Way, beyond the Local Group, beyond the Virgo constellation, the matter distribution looks more and more isotropy the same in all directions \textit{isotropy}perature of the cosmic microwave background (CMB) is very strong evidence for this.roup, the Virgo cluster Following the philosophy of the Coperinical Revolution, 
 
 \newpage
 
@@ -529,7 +541,7 @@ I have included some provisional posterior plots in figure \ref{fig:externalwa},
 \begin{figure}[H]
   \centering
   \includegraphics[width=13cm]{darkN.eps}
-  \caption{Histograms of posterior samples of the number of nodes of an \texttt{AdaptiveFlexKnot} used to reconstruct the dark energy equation of state parameter. $N=0$ corresponds to $w=-1$, the cosmological constant. The first five cases use different maximum $N$, and do not favour the cosmological constant. Adding in Baryonic Acoustic Oscillations and IA supernovae data recovers the cosmological constant in the sixth plot.}
+  \caption{Histograms of posterior samples of the number of nodes of an \texttt{AdaptiveFlexKnot} used to reconstruct the dark energy equation of state. $N=0$ corresponds to $w=-1$, the cosmological constant. The first five cases use different maximum $N$, and do not favour the cosmological constant. Adding in Baryonic Acoustic Oscillations and IA supernovae data recovers the cosmological constant in the sixth plot.}
   \label{fig:darkN}
 \end{figure}
 
