@@ -43,7 +43,7 @@ For the first year of my PhD, I have focussed on learning how to use existing co
 
 I begin by exploring toy examples with \texttt{PolyChord}, then move to reconstructing the primordial matter power spectrum. This exposes an issue with \texttt{PolyChord} where it fails to identify clusters of sampling live points at higher resolution and therefore misses a posterior mode present at lower resolution. Dr.~Handley and I add an interface to \texttt{PolyChord} to enable the user to provide a custom clustering algorithm, and plan to investigate alternatives to \texttt{PolyChord}'s native K-nearest-neighbours method.
 
-The distribution version of \texttt{Cobaya} only allows the user to provide their own $\mathcal P_\mathcal R(k)$ function for the primordial matter power spectrum. To investigate the dark matter equation of state, I add an interface to \texttt{Cobaya} to allow $w(a)$ to be provided in a similar way. This interface is almost ready, except for the need for \texttt{Cobaya} to automatically understand that the equation of state parameters can be sampled together with the other \texttt{CAMB} parameters.
+The distribution version of \texttt{Cobaya} only allows the user to provide their own $\mathcal P_\mathcal R(k)$ function for the primordial matter power spectrum. To investigate the dark energy equation of state, I add an interface to \texttt{Cobaya} to allow $w(a)$ to be provided in a similar way. This interface is almost ready, except for the need for \texttt{Cobaya} to automatically understand that the equation of state parameters can be sampled together with the other \texttt{CAMB} parameters.
 \end{abstract}
 
 \newpage
